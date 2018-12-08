@@ -1,0 +1,22 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module kfold ! in 
+    interface  ! in :kfold
+        subroutine run(fasta,str0,strf,ef,nsim,tmax,trajout,eout,fpt,efpt) ! in :kfold:run.f90
+            character*10001 intent(in) :: fasta
+            character*10001 intent(in) :: str0
+            character*10001 intent(in) :: strf
+            real intent(in) :: ef
+            integer intent(in) :: nsim
+            double precision intent(in) :: tmax
+            character dimension(nsim,100,10001),intent(out),depend(nsim) :: trajout
+            real dimension(nsim,100),intent(out),depend(nsim) :: eout
+            double precision dimension(nsim),intent(out),depend(nsim) :: fpt
+            double precision dimension(nsim),intent(out),depend(nsim) :: efpt
+        end subroutine run
+    end interface 
+end python module kfold
+
+! This file was auto-generated with f2py (version:2).
+! See http://cens.ioc.ee/projects/f2py2e/
