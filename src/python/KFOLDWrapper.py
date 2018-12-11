@@ -14,6 +14,8 @@ ViennaRNA = PyVRNA(parameter_file='rna_turner1999.par',pyindex=True)
 # default options
 NCPUS = multiprocessing.cpu_count()
 
+alphabet=set('ATCGUatcgu')
+
 # get log-spaced time steps from 0.01 to tmax
 def get_trange(tmax):
     dt = 0.01
@@ -53,7 +55,7 @@ def check_options(seq,optsdict):
     return optsdict
 
 # generate tuple for pool.map from dictionary
-def make_kfold_input_tuple(seq,optsdict):
+def make_input_tuple(seq,optsdict):
     return tuple([seq]+[optsdict[x] for x in ['fold0','foldf','ef','nsim','tmax','trange']])
 
 # helper function to call kfold with pool.map
@@ -72,13 +74,14 @@ def kfold_unpack(args):
 #   trange :: 
 # Returns
 #   folds  :: list of lists with dot-parantheses folds
-#   dG     :: list of lists with free energies (kcal/mol)
+#   dGs    :: list of lists with free energies (kcal/mol)
 #   fpt    :: list of first passage times (kfold a.u.)
 #   efpt   :: list of energy first passage times (kfold a.u.)
 def kfold_wrap(seq,fold0,foldf,ef,nsim,tmax,trange):
-    traj,dG,fpt,efpt = kfold.run(seq,fold0,foldf,ef,nsim,tmax)
+    traj,e,fpt,efpt = kfold.run(seq,fold0,foldf,ef,nsim,tmax)
     folds = [["".join(traj[i][j][:len(seq)]) for j in xrange(len(trange))] for i in xrange(nsim)]
-    return folds,dG,fpt,efpt
+    dGs   = [[e[i][j] for j in xrange(len(trange))] for i in xrange(nsim)]
+    return folds,dGs,fpt,efpt
 
 # Python 3.3 this can be all replaced with pool.starmap() which accepts a sequence of
 # argument tuples, and then automatically unpacks the arguments from each tuple; see:
@@ -104,26 +107,46 @@ def run(sequences,options=None,optsfxn=get_default_options,N=NCPUS):
 
     # simulate using python's multiprocessing
     with poolcontext(processes=N) as pool:
+
+        # iterate over list of sequences
         for seq in sequences:
+            assert set(seq)<alphabet, 'Invalid sequence given for kfold: {}. Allowed characters: [ATCGUatcgu].'.format(seq)
+
+            # Set up and validate options input dictionary
             if options is None: opts=optsfxn(seq)
             else: opts=check_options(seq,options)
             print """\nSimulating: {} (first 50 nucleotides shown) up to {} kfold time,
             for {} total trajectories, with {} cores...""".format(seq[:50],opts['tmax'],opts['pynsim']*opts['nsim'],N)
-            inputs = make_kfold_input_tuple(seq,opts)
+            inputs = make_input_tuple(seq,opts)
+
+            # using map with no tqdm
             # results = pool.map(kfold_unpack,repeat(input_tuple,options['pynsim']))
-            for x in tqdm.tqdm(pool.imap_unordered(kfold_unpack,repeat(inputs,opts['pynsim'])), total=opts['pynsim']):
-                pass
+            
+            # using tqdm to track progress
+            output = dict(structures=[],energies=[],fpts=[],efpts=[])
+            output['sequence'] = seq
+            for folds,dGs,fpts,efpts in tqdm.tqdm(pool.imap_unordered(kfold_unpack,repeat(inputs,opts['pynsim'])), total=opts['pynsim']):
+                output['structures'].extend(folds)
+                output['energies'].extend(dGs)
+                output['fpts'].extend(fpts)
+                output['efpts'].extend(efpts)
+
+            yield output
+
 
 def test_wrap():
     seq='ATTCTTAGGGGCGGAGCGGCGCGGCGCCCCTAAGAATTTTT'
-    kfold_unpack(make_kfold_input_tuple(seq,get_default_options(seq)))
+    folds,dGs,fpt,efpt = kfold_unpack(make_input_tuple(seq,get_default_options(seq)))
+    print folds
+    print dGs
 
 def test():
     sequences = [
     'ATTCTTAGGGGCGGAGCGGCGCGGCGCCCCTAAGAATTTTT',
     'AGAGGCGCCAAACAGGGGCCCGGAAACGGGCGCTGTTTTTT'
     ]
-    run(sequences)
+    for o in run(sequences):
+        pass
 
 if __name__ == "__main__":
     # test_wrap()
