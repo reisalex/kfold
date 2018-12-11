@@ -4,7 +4,7 @@
 # Copyright (c) 2016 (Please Refer to LICENCE)
 
 F90 = gfortran
-FFLAGS = -fPIC -O3
+FFLAGS = -fPIC -O3 -fcheck=all
 
 # ---------------------------------------------------------------------
 # Debugging options
@@ -73,7 +73,7 @@ veryclean:
 
 # --------- MAIN ------------
 
-run.o: run.f90
+run.o: run.f90 $(MODULES)
 	$(F90) $(FFLAGS) -c run.f90
 
 kfold.o: kfold.f90 $(MODULES) $(CLASS)

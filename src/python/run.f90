@@ -18,11 +18,13 @@
 !
 ! ==============================================================================
 
-    SUBROUTINE RUN(FASTA, STR0, STRF, EF, NSIM, TMAX, TRAJOUT, EOUT, FPT, EFPT)
+      SUBROUTINE RUN(FASTA, STR0, STRF, EF, NSIM, TMAX, TRAJOUT, EOUT, FPT, EFPT)
+
+        IMPLICIT NONE
 
         CHARACTER (LEN=10001), INTENT(IN) :: fasta
-        CHARACTER (LEN=10001), INTENT(IN) :: str0
-        CHARACTER (LEN=10001), INTENT(IN) :: strf
+        CHARACTER (LEN=10000), INTENT(IN) :: str0
+        CHARACTER (LEN=10000), INTENT(IN) :: strf
         REAL,                  INTENT(IN) :: ef
         DOUBLE PRECISION,      INTENT(IN) :: tmax
         INTEGER,               INTENT(IN) :: nsim
@@ -36,4 +38,4 @@
 
         RETURN
 
-    END SUBROUTINE RUN
+      END SUBROUTINE RUN

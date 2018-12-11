@@ -114,6 +114,10 @@ def run(sequences,options=None,optsfxn=get_default_options,N=NCPUS):
             for x in tqdm.tqdm(pool.imap_unordered(kfold_unpack,repeat(inputs,opts['pynsim'])), total=opts['pynsim']):
                 pass
 
+def test_wrap():
+    seq='ATTCTTAGGGGCGGAGCGGCGCGGCGCCCCTAAGAATTTTT'
+    kfold_unpack(make_kfold_input_tuple(seq,get_default_options(seq)))
+
 def test():
     sequences = [
     'ATTCTTAGGGGCGGAGCGGCGCGGCGCCCCTAAGAATTTTT',
@@ -122,4 +126,5 @@ def test():
     run(sequences)
 
 if __name__ == "__main__":
+    # test_wrap()
     test()

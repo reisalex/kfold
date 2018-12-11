@@ -38,10 +38,10 @@
         INTEGER,                INTENT(IN) :: nsim
         DOUBLE PRECISION,       INTENT(IN) :: tmax
 
+        CHARACTER,              INTENT(OUT) :: trajout(nsim,100,mxnt+1)
         REAL,                   INTENT(OUT) :: eout(nsim,100)
         DOUBLE PRECISION,       INTENT(OUT) :: fpt(nsim)
         DOUBLE PRECISION,       INTENT(OUT) :: efpt(nsim)
-        CHARACTER,              INTENT(OUT) :: trajout(nsim,100,mxnt+1)
 
         !=== VARIABLES ===!
 
@@ -69,8 +69,6 @@
         !=== Max Time (microseconds) ===!
 
         tstart = 0.0d0
-
-        ! iseed = 61928712
 
         fpt(:) = 1.0d12
 
@@ -114,8 +112,8 @@
         CALL CONVERT (seq,iseq,nn)
         CALL SETUPNUC (nn)
 
-        rna% seq(:) = seq(1:nn)
-        rna% iseq(:) = iseq(1:nn)
+        rna% seq(:) = seq(:)
+        rna% iseq(:) = iseq(:)
         rna% n = nn
 
 
@@ -124,6 +122,7 @@
         DO isim=1,nsim
 
           io = 1
+          oindex = 1
           dt = 1.0d-2
 
           tout = dt
