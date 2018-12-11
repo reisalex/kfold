@@ -3,7 +3,7 @@ C++.gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+*.py[codf]
 *$py.class
 
 # Distribution / packaging
