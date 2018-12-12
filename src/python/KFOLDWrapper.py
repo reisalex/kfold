@@ -45,14 +45,13 @@ def get_default_options(seq):
 
 # check options dictionary passed by a user (improve later)
 def check_options(seq,optsdict):
-    assert len(optsdict['fld0'])==len(seq)
-    assert len(optsdict['fldf'])==len(seq)
+    assert len(optsdict['fold0'])==len(seq)
+    assert len(optsdict['foldf'])==len(seq)
     assert isinstance(optsdict['ef'],float)
     assert isinstance(optsdict['nsim'],int)
     assert isinstance(optsdict['tmax'],float)
     assert isinstance(optsdict['trange'],list)
     assert isinstance(optsdict['pynsim'],int)
-    return optsdict
 
 # generate tuple for pool.map from dictionary
 def make_input_tuple(seq,optsdict):
@@ -97,29 +96,35 @@ def poolcontext(*args,**kwargs):
 # main function to simulate list of sequences
 # Arguments
 #   sequences :: list of RNA sequences to simulate
-#   options   :: dictionary of options for all simulations, see function `get_default_options`
+#   options   :: list of dictionary of options for all simulations, see function `get_default_options`
 #   optsfxn   :: optional function to return options, by default uses `get_default_options` if <options> argument is None
 #   N         :: number of processes to instance for multiprocessing (uses default CPU count otherwise)
 def run(sequences,options=None,optsfxn=get_default_options,N=NCPUS):
     
     # check inputs
     assert isinstance(sequences,list), 'Input argument <sequences> for function `simulate_rna` should be a list of sequence(s).'
+    if not options is None: assert len(sequences)==len(options), 'Invalid input or size of argument options for KFOLDWrapper. See notes in module.'
 
     # simulate using python's multiprocessing
     with poolcontext(processes=N) as pool:
 
         # iterate over list of sequences
-        for seq in sequences:
+        for i,seq in enumerate(sequences):
             assert set(seq)<alphabet, 'Invalid sequence given for kfold: {}. Allowed characters: [ATCGUatcgu].'.format(seq)
 
             # Set up and validate options input dictionary
-            if options is None: opts=optsfxn(seq)
-            else: opts=check_options(seq,options)
+            if options is None:
+                opts=optsfxn(seq)
+            else:
+                opts = options[i]
+                check_options(seq,opts)
+
+            # Be verbose!
             print """\nSimulating: {} (first 50 nucleotides shown) up to {} kfold time,
             for {} total trajectories, with {} cores...""".format(seq[:50],opts['tmax'],opts['pynsim']*opts['nsim'],N)
             inputs = make_input_tuple(seq,opts)
 
-            # using map with no tqdm
+            # using pool.map with no tqdm
             # results = pool.map(kfold_unpack,repeat(input_tuple,options['pynsim']))
             
             # using tqdm to track progress
