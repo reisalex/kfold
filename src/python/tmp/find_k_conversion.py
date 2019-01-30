@@ -53,7 +53,7 @@ def callback(X):
     print "iter={0}, k={1}".format(Nfeval, X[0])
     Nfeval += 1
 
-def fun(x, df):''
+def fun(x, df):
     seqs      = df['used_mRNA_sequence']
     folds     = df['final_mRNA_structure']
     dG_final  = np.array(df['dG_total']) + np.array(df['dG_mRNA'])
