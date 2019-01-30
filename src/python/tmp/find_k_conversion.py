@@ -56,7 +56,7 @@ def callback(X):
     Nfeval += 1
 
 def fun(x, df):
-    seqs      = df['used_mRNA_sequence']
+    seqs      = list(df['used_mRNA_sequence'])
     folds     = df['final_mRNA_structure']
     dG_final  = np.array(df['dG_total']) + np.array(df['dG_mRNA'])
     taus      = x[0]*np.exp(beta*dG_final)
