@@ -17,6 +17,7 @@
 
 import sys
 import shelve
+import numpy as np
 import pandas as pd
 import scipy  as sp
 from scipy.optimize import minimize
