@@ -80,7 +80,7 @@
         
         CALL SYSTEM_CLOCK(s)
         
-        SEEDGEN = abs( mod((s*181)*((pid-83)*359), 104729) )
+        SEEDGEN = abs( mod( abs( (s*181)*((pid-83)*359) ) , 104729) )
         
         RETURN
         
