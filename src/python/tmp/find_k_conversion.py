@@ -46,8 +46,7 @@ calc_y = lambda a0,a1,x: a1*x+a0
 def calc_total_error(x,y):
     LSQ = lambda b: np.sum( (y-(beta*x+b))**2.0 )
     res = minimize(LSQ,x0=1,bounds=None)
-    (m,b) = (slope,res.x[0])
-    residuals = y - calc_y(b,m,x)
+    residuals = y - calc_y(res.x[0],beta,x)
     return np.sum(residuals**2.0)
 
 def callback(X):
@@ -63,6 +62,7 @@ def fun(x, df):
     options   = [custom_options(seq,fold0,tau) for seq,fold0,tau in zip(seqs,folds,taus)]
     dG_mRNAs  = []
     for output in KFOLDWrapper.run(seqs,options):
+        print output['structures']
         foldsf = [folds[-1] for folds in output['structures']]
         dGfs   = [ViennaRNA.RNAeval([seq],[fold]) for seq,fold in zip(seqs,foldsf)]
         dG_mRNAs.append( np.mean(dGfs) )
