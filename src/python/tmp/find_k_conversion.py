@@ -19,6 +19,7 @@ import sys
 import shelve
 import pandas as pd
 import scipy  as sp
+from scipy.optimize import minimize
 
 sys.path.append('..')
 import KFOLDWrapper
@@ -43,7 +44,7 @@ calc_y = lambda a0,a1,x: a1*x+a0
 
 def calc_total_error(x,y):
     LSQ = lambda b: np.sum( (y-(beta*x+b))**2.0 )
-    res = sp.optimize.minimize(LSQ,x0=1,bounds=None)
+    res = minimize(LSQ,x0=1,bounds=None)
     (m,b) = (slope,res.x[0])
     residuals = y - calc_y(b,m,x)
     return np.sum(residuals**2.0)
@@ -70,7 +71,7 @@ def fun(x, df):
 
 def main():
     df = pd.read_csv('JACS_2017.csv')
-    sp.optimize.minimize(fun, x0=[200.0], args=(df), bounds=[(10.0,10000.0)])
+    minimize(fun, x0=[200.0], args=(df), bounds=[(10.0,10000.0)])
 
 if __name__ == "__main__":
     main()
