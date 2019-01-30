@@ -23,7 +23,7 @@ import scipy  as sp
 sys.path.append('..')
 import KFOLDWrapper
 from PyVRNA import PyVRNA
-ViennaRNA = PyVRNA(parameter_file='andronescu_2007.par', pyindex=True)
+ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', pyindex=True)
 
 beta = 0.45
 
