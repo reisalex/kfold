@@ -98,10 +98,10 @@
         READ(strf,'(10000A1)')(fld(k),k=1,nn)
         CALL V2CT (ibpf,fld,'C',nn)
 
-        IF ( ALL( (/1.0d0, 10.0d0, 100.0d0, 1000.0d0, 10000.0d0, 100000.0d0/)/=tmax ) )THEN
-          WRITE(*,*)'ERROR: tmax must be an nth power of 10, i.e. 1, 10, 100'
-          CALL EXIT(0)
-        ENDIF
+        ! IF ( ALL( (/1.0d0, 10.0d0, 100.0d0, 1000.0d0, 10000.0d0, 100000.0d0/)/=tmax ) )THEN
+          ! WRITE(*,*)'ERROR: tmax must be an nth power of 10, i.e. 1, 10, 100'
+          ! CALL EXIT(0)
+        ! ENDIF
 
         !=== SECTION 1 - Read in data ===!
 
