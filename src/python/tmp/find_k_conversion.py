@@ -76,7 +76,7 @@ def fun(x):
 
 def main():
     # minimize(fun, x0=[650.0], bounds=[(500.0,10000.0)])
-    for k in xrange(400.0,10000.0,50.0):
+    for k in xrange(400.0,10000.0,50):
         print k
 
 if __name__ == "__main__":
