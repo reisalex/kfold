@@ -76,12 +76,14 @@ def fun(x):
 
 def main():
     # minimize(fun, x0=[650.0], bounds=[(500.0,10000.0)])
-    x = [15000.0]
-    rsqlist = []
-    while x[0] < 25000.0:
-        rsqlist.append((x[0],fun(x)))
-        x[0] += 1000.0
-        print rsqlist
+    # x = [15000.0]
+    # rsqlist = []
+    # while x[0] < 25000.0:
+    #     rsqlist.append((x[0],fun(x)))
+    #     x[0] += 1000.0
+    #     print rsqlist
+
+    print "R^2={}".format(fun([30000.0]))
 
 if __name__ == "__main__":
     main()
