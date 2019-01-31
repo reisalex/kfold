@@ -191,8 +191,7 @@
             ENDIF
 
           ENDDO
-
-          oindex = oindex + 1
+          
           trajout(isim,oindex,1:nn) = fld(1:nn)
           eout(isim,oindex) = e
 
