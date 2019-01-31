@@ -68,6 +68,8 @@ def fun(x, df):
                 if len(f) > 0:
                     foldsf.append(f)
                 break
+        print traj
+        print [len(f) for f in traj]
         print foldsf
         print [len(f) for f in foldsf]
         quit()
