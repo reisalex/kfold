@@ -76,7 +76,7 @@ def fun(x):
 
 def main():
     # minimize(fun, x0=[650.0], bounds=[(500.0,10000.0)])
-    x = [400.0]
+    x = [5400.0]
     rsqlist = []
     while x[0] < 10000.0:
         rsqlist.append(fun(x))
