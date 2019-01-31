@@ -20,6 +20,7 @@ import shelve
 import numpy as np
 import pandas as pd
 import scipy  as sp
+from scipy.stats import pearsonr
 from scipy.optimize import minimize, fmin_bfgs, fmin_l_bfgs_b
 
 sys.path.append('..')
@@ -66,7 +67,7 @@ def fun(x):
     dG_totals = dG_final - np.array(dG_mRNAs)
     y = np.log(df['PROT.MEAN'])
     SQE = calc_total_error(dG_totals,y)
-    (r,pvalue) = sp.stats.pearsonr(dG_totals,y)
+    (r,pvalue) = pearsonr(dG_totals,y)
     print "-"*50
     print "k={}, Sum square error={}, R^2={}".format(x[0],SQE,r**2.0)
     print "-"*50
