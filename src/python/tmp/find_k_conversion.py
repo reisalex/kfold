@@ -70,7 +70,11 @@ def fun(x, df):
         dG_mRNAs.append( np.mean(dGfs) )
     x = dG_totals = dG_final - np.array(dG_mRNAs)
     y = np.log(df['PROT.MEAN'])
-    return calc_total_error(x,y)
+    SQE = calc_total_error(x,y)
+    print "-"*20
+    print x[0],SQE
+    print "-"*20
+    return SQE
 
 def main():
     df = pd.read_csv('JACS_2017.csv')
