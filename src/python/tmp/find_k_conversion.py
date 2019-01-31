@@ -62,16 +62,8 @@ def fun(x, df):
     options   = [custom_options(seq,fold0,tau) for seq,fold0,tau in zip(seqs,folds,taus)]
     dG_mRNAs  = []
     for output in KFOLDWrapper.run(seqs,options):
-        foldsf = []
-        for traj in output['structures']:
-            traj = filter(None,traj[:])
-            foldsf.append(traj[-1])
-        print traj
-        print [len(f) for f in traj]
-        print foldsf
-        print [len(f) for f in foldsf]
-        quit()
         seq = output['sequence']
+        foldsf = [filter(None,traj)[-1] for traj in output['structures']]
         dGfs   = [ViennaRNA.RNAeval([seq],[fold]) for fold in foldsf]
         dG_mRNAs.append( np.mean(dGfs) )
     x = dG_totals = dG_final - np.array(dG_mRNAs)
