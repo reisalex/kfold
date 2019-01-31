@@ -51,13 +51,6 @@ def calc_total_error(x,y):
     residuals = y - calc_y(res.x[0],beta,x)
     return np.sum(residuals**2.0)
 
-def callbackF(X):
-    global Nfeval
-    print "="*20
-    print "iter={0}, k={1}".format(Nfeval, X[0])
-    print "="*20
-    Nfeval += 1
-
 def fun(x):
     seqs      = list(df['used_mRNA_sequence'])
     folds     = df['final_mRNA_structure']
@@ -70,16 +63,16 @@ def fun(x):
         foldsf = [filter(None,traj)[-1] for traj in output['structures']]
         dGfs   = [ViennaRNA.RNAeval([seq],[fold]) for fold in foldsf]
         dG_mRNAs.append( np.mean(dGfs) )
-    x = dG_totals = dG_final - np.array(dG_mRNAs)
+    dG_totals = dG_final - np.array(dG_mRNAs)
     y = np.log(df['PROT.MEAN'])
-    SQE = calc_total_error(x,y)
-    print "-"*20
+    SQE = calc_total_error(dG_totals,y)
+    print "-"*50
     print x[0],SQE
-    print "-"*20
+    print "-"*50
     return SQE
 
 def main():
-    minimize(fun, x0=[200.0], bounds=[(10.0,10000.0)], callback=callbackF)
+    minimize(fun, x0=[200.0], bounds=[(10.0,10000.0)])
 
 if __name__ == "__main__":
     main()
