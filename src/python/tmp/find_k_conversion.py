@@ -79,7 +79,7 @@ def main():
     x = [5400.0]
     rsqlist = []
     while x[0] < 10000.0:
-        rsqlist.append(fun(x))
+        rsqlist.append((x[0],fun(x)))
         x[0] += 200.0
         print rsqlist
 
