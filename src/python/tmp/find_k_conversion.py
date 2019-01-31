@@ -70,7 +70,7 @@ def fun(x):
     SQE = calc_total_error(dG_totals,y)
     (r,pvalue) = pearsonr(dG_totals,y)
     print "-"*50
-    print "k={:1f}, Sum square error={:2f}, R^2={:2f}".format(x[0],SQE,r**2.0)
+    print "k={0:.1f}, Sum square error={1:.2f}, R^2={2:.2f}".format(x[0],SQE,r**2.0)
     print "-"*50
     return SQE
 
