@@ -78,7 +78,7 @@ def fun(x, df):
 
 def main():
     df = pd.read_csv('JACS_2017.csv')
-    minimize(fun, x0=[200.0], args=(df), bounds=((10.0,10000.0)), callback=callbackF)
+    minimize(fun, x0=(200.0), args=(df), bounds=((10.0,10000.0)), callback=callbackF)
 
 if __name__ == "__main__":
     main()
