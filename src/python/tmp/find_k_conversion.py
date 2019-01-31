@@ -81,7 +81,7 @@ def main():
     while x[0] < 10000.0:
         rsqlist.append(fun(x))
         x[0] ++ 50.0
-    print rsqlist
+        print rsqlist
 
 if __name__ == "__main__":
     main()
