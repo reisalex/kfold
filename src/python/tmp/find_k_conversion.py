@@ -72,7 +72,7 @@ def fun(x):
     print "-"*50
     print "k={0:.1f}, Sum square error={1:.2f}, R^2={2:.2f}".format(x[0],SQE,r**2.0)
     print "-"*50
-    return SQE
+    return r**2.0
 
 def main():
     minimize(fun, x0=[650.0], bounds=[(500.0,10000.0)])
