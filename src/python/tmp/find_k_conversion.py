@@ -53,6 +53,7 @@ def calc_total_error(x,y):
     return np.sum(residuals**2.0)
 
 def fun(x):
+    print "Initializing new iter with k={}".format(x[0])
     seqs      = list(df['used_mRNA_sequence'])
     folds     = df['final_mRNA_structure']
     dG_final  = np.array(df['dG_total']) + np.array(df['dG_mRNA'])
@@ -69,12 +70,12 @@ def fun(x):
     SQE = calc_total_error(dG_totals,y)
     (r,pvalue) = pearsonr(dG_totals,y)
     print "-"*50
-    print "k={}, Sum square error={}, R^2={}".format(x[0],SQE,r**2.0)
+    print "k={:1f}, Sum square error={:2f}, R^2={:2f}".format(x[0],SQE,r**2.0)
     print "-"*50
     return SQE
 
 def main():
-    minimize(fun, x0=[100.0], bounds=[(100.0,10000.0)])
+    minimize(fun, x0=[500.0], bounds=[(100.0,10000.0)])
 
 if __name__ == "__main__":
     main()
