@@ -83,7 +83,8 @@ def main():
     #     x[0] += 1000.0
     #     print rsqlist
 
-    print "R^2={}".format(fun([50000.0]))
+    # 50000.0 > R**2.0 = 0.72
+    print "R^2={}".format(fun([75000.0]))
 
 if __name__ == "__main__":
     main()
