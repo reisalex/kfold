@@ -75,7 +75,9 @@ def fun(x):
     return r**2.0
 
 def main():
-    minimize(fun, x0=[650.0], bounds=[(500.0,10000.0)])
+    # minimize(fun, x0=[650.0], bounds=[(500.0,10000.0)])
+    for k in xrange(400.0,10000.0,50.0):
+        print k
 
 if __name__ == "__main__":
     main()
