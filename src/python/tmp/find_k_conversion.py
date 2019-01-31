@@ -64,6 +64,8 @@ def fun(x, df):
     for output in KFOLDWrapper.run(seqs,options):
         foldsf = []
         for traj in output['structures']:
+            print traj
+            quit()
             for f in reversed(folds):
                 if len(f) > 0:
                     foldsf.append(f)
