@@ -75,7 +75,7 @@ def fun(x):
     return SQE
 
 def main():
-    minimize(fun, x0=[500.0], bounds=[(100.0,10000.0)])
+    minimize(fun, x0=[650.0], bounds=[(500.0,10000.0)])
 
 if __name__ == "__main__":
     main()
