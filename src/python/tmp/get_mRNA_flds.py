@@ -10,7 +10,7 @@ folds = df['final_structure']
 
 final_mRNA_stuctures = []
 for f in folds:
-    print f
+    print f, len(f)
     bp_tuple = ViennaRNA.vienna2bp(f)
     # print bp_tuple
 
@@ -21,8 +21,9 @@ for f in folds:
             bpy.append(y)
 
     vienna = ViennaRNA.bp2vienna(length=[bp_tuple.length[0]], bpx=bpx, bpy=bpy)
-    print vienna
+    print vienna, len(vienna)
+    assert len(vienna) == bp_tuple.length[0]
     final_mRNA_stuctures.append(vienna)
 
-df['final_mRNA_stucture'] = final_mRNA_stuctures
+df['final_mRNA_structure'] = final_mRNA_stuctures
 df.to_csv('JACS_2017_2.csv')
