@@ -66,13 +66,14 @@ def fun(x):
     dG_totals = dG_final - np.array(dG_mRNAs)
     y = np.log(df['PROT.MEAN'])
     SQE = calc_total_error(dG_totals,y)
+    (r,pvalue) = sp.stats.pearsonr(dG_totals,y)
     print "-"*50
-    print x[0],SQE
+    print "k={}, Sum square error={}, R^2={}".format(x[0],SQE,r**2.0)
     print "-"*50
     return SQE
 
 def main():
-    minimize(fun, x0=[200.0], bounds=[(10.0,10000.0)])
+    minimize(fun, x0=[100.0], bounds=[(10.0,250.0)])
 
 if __name__ == "__main__":
     main()
