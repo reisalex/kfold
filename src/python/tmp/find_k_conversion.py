@@ -41,7 +41,7 @@ def custom_options(seq, initial_structure, maxtime):
         nsim=1,
         tmax=maxtime,
         trange=KFOLDWrapper.get_trange(maxtime),
-        pynsim=100
+        pynsim=50
         )
 
 calc_y = lambda a0,a1,x: a1*x+a0
