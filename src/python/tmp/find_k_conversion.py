@@ -64,7 +64,7 @@ def fun(x, df):
     for output in KFOLDWrapper.run(seqs,options):
         foldsf = []
         for traj in output['structures']:
-            traj = filter('',traj[:])
+            traj = filter(None,traj[:])
             foldsf.append(traj[-1])
         print traj
         print [len(f) for f in traj]
