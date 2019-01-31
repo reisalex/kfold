@@ -27,6 +27,8 @@ import KFOLDWrapper
 from PyVRNA import PyVRNA
 ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', pyindex=True)
 
+df = pd.read_csv('JACS_2017.csv')
+
 beta = 0.45
 
 def custom_options(seq, initial_structure, maxtime):
@@ -56,7 +58,7 @@ def callbackF(X):
     print "="*20
     Nfeval += 1
 
-def fun(x, df):
+def fun(x):
     seqs      = list(df['used_mRNA_sequence'])
     folds     = df['final_mRNA_structure']
     dG_final  = np.array(df['dG_total']) + np.array(df['dG_mRNA'])
@@ -77,8 +79,7 @@ def fun(x, df):
     return SQE
 
 def main():
-    df = pd.read_csv('JACS_2017.csv')
-    minimize(fun, x0=(200.0,), args=(df), bounds=((10.0,10000.0),), callback=callbackF)
+    minimize(fun, x0=[200.0], bounds=[(10.0,10000.0)], callback=callbackF)
 
 if __name__ == "__main__":
     main()
