@@ -68,6 +68,10 @@ def fun(x, df):
                 if len(f) > 0:
                     foldsf.append(f)
                 break
+        for seq,fold in zip(seqs,foldsf):
+            print seq
+            print fold
+        quit()
         dGfs   = [ViennaRNA.RNAeval([seq],[fold]) for seq,fold in zip(seqs,foldsf)]
         dG_mRNAs.append( np.mean(dGfs) )
     x = dG_totals = dG_final - np.array(dG_mRNAs)
