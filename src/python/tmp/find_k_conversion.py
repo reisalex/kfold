@@ -51,7 +51,9 @@ def calc_total_error(x,y):
 
 def callback(X):
     global Nfeval
+    print "="*20
     print "iter={0}, k={1}".format(Nfeval, X[0])
+    print "="*20
     Nfeval += 1
 
 def fun(x, df):
@@ -72,7 +74,7 @@ def fun(x, df):
 
 def main():
     df = pd.read_csv('JACS_2017.csv')
-    minimize(fun, x0=[200.0], args=(df), bounds=[(10.0,10000.0)])
+    minimize(fun, x0=[200.0], args=(df), bounds=[(10.0,10000.0)], callback=callback)
 
 if __name__ == "__main__":
     main()
