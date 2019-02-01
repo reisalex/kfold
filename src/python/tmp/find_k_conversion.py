@@ -58,6 +58,7 @@ def fun(x):
     folds     = df['final_mRNA_structure']
     dG_final  = np.array(df['dG_total']) + np.array(df['dG_mRNA'])
     taus      = x[0]*np.exp(beta*dG_final)
+    taus      = [t if t<1000.0 else 1000.0 for t in taus[:]]
     options   = [custom_options(seq,fold0,tau) for seq,fold0,tau in zip(seqs,folds,taus)]
     dG_mRNAs  = []
     for output in KFOLDWrapper.run(seqs,options):
@@ -86,7 +87,7 @@ def main():
     # 50000.0 > R**2.0 = 0.72
     # 75000.0 > R**2.0 = 0.724
     # 100000.0 > R**2.0 = 0.71
-    print "R^2={}".format(fun([150000.0]))
+    print "R^2={}".format(fun([350000.0]))
 
 if __name__ == "__main__":
     main()
