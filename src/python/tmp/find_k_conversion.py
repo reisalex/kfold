@@ -78,7 +78,7 @@ def fun(x):
 def simulate():
     seqs    = list(df['used_mRNA_sequence'])
     folds   = df['final_mRNA_structure']
-    options = [custom_options(seq,fold0,100.0) for seq,fold0 in zip(seqs,folds)]
+    options = [custom_options(seq,fold0,10.0) for seq,fold0 in zip(seqs,folds)]
     all_mean_dGs = list()
     for output in KFOLDWrapper.run(seqs,options):
         seq = output['sequence']
