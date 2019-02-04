@@ -81,9 +81,7 @@ def simulate():
     options = [custom_options(seq,fold0,100.0) for seq,fold0 in zip(seqs,folds)]
     all_mean_dGs = list()
     for output in KFOLDWrapper.run(seqs,options):
-        for traj in output['structures']:
-            print filter(None,traj)
-            quit()
+        seq = output['sequence']
         dGs = [[ViennaRNA.RNAeval([seq],[fold]) for fold in filter(None,traj)] for traj in output['structures']]
         assert all(len(dG_list)==len(dGs[0]) for dG_list in dGs[1:])
         mean_dGs = []
