@@ -75,6 +75,27 @@ def fun(x):
     print "-"*50
     return r**2.0
 
+def simulate():
+    seqs    = list(df['used_mRNA_sequence'])
+    folds   = df['final_mRNA_structure']
+    # taus      = x[0]*np.exp(beta*dG_final)
+    options = [custom_options(seq,fold0,100.0) for seq,fold0 in zip(seqs,folds)]
+    all_mean_dGs = list()
+    print all_mean_dGs
+    for output in KFOLDWrapper.run(seqs,options):
+        dGs = [[ViennaRNA.RNAeval([seq],[fold]) for fold in filter(None,traj)] for traj in output['structures']]
+        assert all(len(dG_list)==len(dGs[0]) for dG_list in dGs[1:])
+        mean_dGs = []
+        for i in xrange(len(dGs[0])):
+            mean_dGs.append( np.mean( dG_list[i] for dG_list in dGs ) )
+        all_mean_dGs.append(mean_dGs)
+
+    df2 = pd.DataFrame(all_mean_dGs, columns=options[0]['trange'])
+    df2.insert(0, column='sequence', value=seqs)
+    df2.insert(1, column='initial_structure', value=folds)
+    df2.to_csv('full_time_kfold_simulations_JACS.csv')
+
+
 def main():
     # minimize(fun, x0=[650.0], bounds=[(500.0,10000.0)])
     # x = [15000.0]
@@ -87,8 +108,31 @@ def main():
     # 50000.0 > R**2.0 = 0.72
     # 75000.0 > R**2.0 = 0.724
     # 100000.0 > R**2.0 = 0.71
-    print "R^2={}".format(fun([500000.0]))
+    # print "R^2={}".format(fun([500000.0]))
+
+    kvals = map(float,[
+    100,
+    250,
+    500,
+    750,
+    1000,
+    2500,
+    5000,
+    7500,
+    10000,
+    25000,
+    50000,
+    75000,
+    100000,
+    250000,
+    500000,
+    1e6,
+    2500000,
+    5000000,
+    1e7,
+    25000000])
 
 if __name__ == "__main__":
-    main()
+    # main()
+    simulate()
     
