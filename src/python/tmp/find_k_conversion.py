@@ -78,11 +78,12 @@ def fun(x):
 def simulate():
     seqs    = list(df['used_mRNA_sequence'])
     folds   = df['final_mRNA_structure']
-    # taus      = x[0]*np.exp(beta*dG_final)
     options = [custom_options(seq,fold0,100.0) for seq,fold0 in zip(seqs,folds)]
     all_mean_dGs = list()
-    print all_mean_dGs
     for output in KFOLDWrapper.run(seqs,options):
+        for traj in output['structures']:
+            print filter(None,traj)
+            quit()
         dGs = [[ViennaRNA.RNAeval([seq],[fold]) for fold in filter(None,traj)] for traj in output['structures']]
         assert all(len(dG_list)==len(dGs[0]) for dG_list in dGs[1:])
         mean_dGs = []
