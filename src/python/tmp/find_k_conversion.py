@@ -86,7 +86,7 @@ def simulate():
         assert all(len(dG_list)==len(dGs[0]) for dG_list in dGs[1:])
         mean_dGs = []
         for i in xrange(len(dGs[0])):
-            mean_dGs.append( np.mean( dG_list[i] for dG_list in dGs ) )
+            mean_dGs.append( np.mean( [dG_list[i] for dG_list in dGs] ) )
         all_mean_dGs.append(mean_dGs)
 
     df2 = pd.DataFrame(all_mean_dGs, columns=options[0]['trange'])
