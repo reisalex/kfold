@@ -50,7 +50,7 @@ def calc_total_error(x,y):
     LSQ = lambda b: np.sum( (y-(beta*x+b))**2.0 )
     res = minimize(LSQ,x0=1,bounds=None)
     residuals = y - calc_y(res.x[0],beta,x)
-    return np.sum(residuals**2.0)
+    return np.sum(residuals**2.0), np.exp(res.x[0])
 
 def fun(x):
     print "Initializing new iter with k={}".format(x[0])
@@ -68,12 +68,9 @@ def fun(x):
         dG_mRNAs.append( np.mean(dGfs) )
     dG_totals = dG_final - np.array(dG_mRNAs)
     y = np.log(df['PROT.MEAN'])
-    SQE = calc_total_error(dG_totals,y)
+    SQE, K = calc_total_error(dG_totals,y)
     (r,pvalue) = pearsonr(dG_totals,y)
-    print "-"*50
-    print "k={0:.1f}, Sum square error={1:.2f}, R^2={2:.2f}".format(x[0],SQE,r**2.0)
-    print "-"*50
-    return r**2.0
+    return r**2.0, SQE, dG_mRNAs, dG_totals, K
 
 def simulate():
     seqs    = list(df['used_mRNA_sequence'])
@@ -129,7 +126,27 @@ def main():
     2500000
     ])
 
+    kvals = [100.0,101.0]
+
+    stats_table     = []
+    dG_mRNAs_table  = []
+    dG_totals_table = []
+    for k in kvals:
+        R2, RSS, dG_mRNAs, dG_totals, K = fun([k])
+        stats_table.append([k,R2,RSS,K])
+        dG_mRNAs_table.append(dG_mRNAs)
+        dG_totals_table.append(dG_totals)
+
+    df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
+    df2 = pd.DataFrame(dG_mRNAs_table, columns=kvals)
+    df3 = pd.DataFrame(dG_totals_table, columns=kvals)
+
+    writer = pd.ExcelWriter('identify_k.xlsx',engine='xlsxwriter')
+    df1.to_excel(writer,sheet_name='Sheet1')
+    df2.to_excel(writer,sheet_name='Sheet2')
+    df3.to_excel(writer,sheet_name='Sheet3')
+    writer.save()
+
 if __name__ == "__main__":
-    # main()
-    simulate()
-    
+    main()
+    # simulate() 
