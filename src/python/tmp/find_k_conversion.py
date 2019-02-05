@@ -126,8 +126,6 @@ def main():
     2500000
     ])
 
-    kvals = [100.0,101.0]
-
     stats_table     = []
     dG_mRNAs_table  = []
     dG_totals_table = []
@@ -138,7 +136,7 @@ def main():
         dG_totals_table.append(dG_totals)
 
     df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
-    
+
     df2 = pd.DataFrame(dG_mRNAs_table).transpose()
     df2.columns = kvals
 
