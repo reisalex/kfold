@@ -41,7 +41,7 @@ def custom_options(seq, initial_structure, maxtime):
         nsim=1,
         tmax=maxtime,
         trange=KFOLDWrapper.get_trange(maxtime),
-        pynsim=50
+        pynsim=1000
         )
 
 calc_y = lambda a0,a1,x: a1*x+a0
@@ -93,18 +93,6 @@ def simulate():
 
 
 def main():
-    # minimize(fun, x0=[650.0], bounds=[(500.0,10000.0)])
-    # x = [15000.0]
-    # rsqlist = []
-    # while x[0] < 25000.0:
-    #     rsqlist.append((x[0],fun(x)))
-    #     x[0] += 1000.0
-    #     print rsqlist
-
-    # 50000.0 > R**2.0 = 0.72
-    # 75000.0 > R**2.0 = 0.724
-    # 100000.0 > R**2.0 = 0.71
-    # print "R^2={}".format(fun([500000.0]))
 
     kvals = map(float,[
     100,
@@ -151,4 +139,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # simulate() 
+    simulate()
