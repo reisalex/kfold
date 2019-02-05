@@ -138,8 +138,12 @@ def main():
         dG_totals_table.append(dG_totals)
 
     df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
-    df2 = pd.DataFrame(dG_mRNAs_table, columns=kvals)
-    df3 = pd.DataFrame(dG_totals_table, columns=kvals)
+    
+    df2 = pd.DataFrame(dG_mRNAs_table).transpose()
+    df2.columns = kvals
+
+    df3 = pd.DataFrame(dG_totals_table).transpose()
+    df3.columns = kvals
 
     writer = pd.ExcelWriter('identify_k.xlsx',engine='xlsxwriter')
     df1.to_excel(writer,sheet_name='Sheet1')
