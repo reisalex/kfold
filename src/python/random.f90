@@ -69,19 +69,27 @@
 
 ! ==============================================================================
 
-      INTEGER FUNCTION SEEDGEN (PID)
+      FUNCTION SEEDGEN ()
 
         USE ISO_FORTRAN_ENV
         
         IMPLICIT NONE
 
-        INTEGER, INTENT(IN) :: pid
+        INTEGER(KIND=INT64) :: SEEDGEN
+        INTEGER :: pid
         INTEGER :: s
-        
+
+        pid = GETPID()
+
         CALL SYSTEM_CLOCK(s)
+
+        SEEDGEN = 0
         
-        SEEDGEN = abs( mod( abs( (s*181)*((pid-83)*359) ) , 104729) )
-        
+        DO WHILE (SEEDGEN == 0)
+            SEEDGEN = ABS( MOD( ABS(s*181)*((pid-83)*359), 104729) )
+            s = s + 1
+        ENDDO
+
         RETURN
         
       END FUNCTION SEEDGEN
