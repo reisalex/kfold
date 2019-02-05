@@ -126,10 +126,10 @@ def main():
         df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
 
         df2 = pd.DataFrame(dG_mRNAs_table).transpose()
-        df2.columns = kvals[:i]
+        df2.columns = kvals[:i+1]
 
         df3 = pd.DataFrame(dG_totals_table).transpose()
-        df3.columns = kvals[:i]
+        df3.columns = kvals[:i+1]
 
         writer = pd.ExcelWriter('identify_k.xlsx',engine='xlsxwriter')
         df1.to_excel(writer,sheet_name='Sheet1')
