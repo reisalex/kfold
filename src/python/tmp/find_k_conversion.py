@@ -41,7 +41,7 @@ def custom_options(seq, initial_structure, maxtime):
         nsim=1,
         tmax=maxtime,
         trange=KFOLDWrapper.get_trange(maxtime),
-        pynsim=10
+        pynsim=1000
         )
 
 calc_y = lambda a0,a1,x: a1*x+a0
@@ -57,7 +57,7 @@ def fun(x, fulltime_mean, fulltime_std):
     seqs      = list(df['used_mRNA_sequence'])
     folds     = df['final_mRNA_structure']
     dG_final  = np.array(df['dG_total']) + np.array(df['dG_mRNA'])
-    taus      = [t if t<10.0 else 10.0 for t in x[0]*np.exp(beta*dG_final)]
+    taus      = [t if t<1000.0 else 1000.0 for t in x[0]*np.exp(beta*dG_final)]
     # options   = [custom_options(seq,fold0,tau) for seq,fold0,tau in zip(seqs,folds,taus)]
 
     dG_mRNAs_avg = []
@@ -66,7 +66,7 @@ def fun(x, fulltime_mean, fulltime_std):
     for i, (seq, fold0, tau) in enumerate(zip(seqs,folds,taus)):
 
         # extract existing values from fulltime simulations (completed first)
-        if tau == 10.0:
+        if tau == 1000.0:
             dG_mRNAs_avg.append( fulltime_mean.iloc[i][-1] )
             dG_mRNAs_std.append( fulltime_std.iloc[i][-1]  )
             continue
@@ -90,7 +90,7 @@ def fun(x, fulltime_mean, fulltime_std):
 def simulate():
     seqs    = list(df['used_mRNA_sequence'])
     folds   = df['final_mRNA_structure']
-    options = [custom_options(seq,fold0,10.0) for seq,fold0 in zip(seqs,folds)]
+    options = [custom_options(seq,fold0,1000.0) for seq,fold0 in zip(seqs,folds)]
     all_mean_dGs = list()
     all_std_dGs  = list()
     for output in KFOLDWrapper.run(seqs,options):
