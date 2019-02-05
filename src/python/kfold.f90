@@ -55,7 +55,7 @@
         INTEGER :: ibpf(mxnt)
 
         INTEGER :: i,j,k,n,nn,is,io,oindex
-        INTEGER :: isim,narg,iseed,seedgen,pid
+        INTEGER :: isim,narg,iseed,seedgen
 
         DOUBLE PRECISION :: random,tstart,time
         DOUBLE PRECISION :: tout,dt
@@ -70,10 +70,10 @@
 
         tstart = 0.0d0
 
-        fpt(:) = 1.0d12
+        efpt(:) = 1.0d12
+        fpt(:)  = 1.0d12
 
-        pid = GETPID()
-        iseed = SEEDGEN(pid)
+        iseed = SEEDGEN()
 
         !=== Inital / Final Structure ===!
 
@@ -115,7 +115,6 @@
         rna% seq(:) = seq(:)
         rna% iseq(:) = iseq(:)
         rna% n = nn
-
 
         !=== SECTION 2 - Perform RNA Kinetics ===! 
 
