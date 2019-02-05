@@ -117,7 +117,7 @@ def main():
     stats_table     = []
     dG_mRNAs_table  = []
     dG_totals_table = []
-    for k in kvals:
+    for i,k in enumerate(kvals):
         R2, RSS, dG_mRNAs, dG_totals, K = fun([k])
         stats_table.append([k,R2,RSS,K])
         dG_mRNAs_table.append(dG_mRNAs)
@@ -126,10 +126,10 @@ def main():
         df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
 
         df2 = pd.DataFrame(dG_mRNAs_table).transpose()
-        df2.columns = kvals
+        df2.columns = kvals[:i]
 
         df3 = pd.DataFrame(dG_totals_table).transpose()
-        df3.columns = kvals
+        df3.columns = kvals[:i]
 
         writer = pd.ExcelWriter('identify_k.xlsx',engine='xlsxwriter')
         df1.to_excel(writer,sheet_name='Sheet1')
