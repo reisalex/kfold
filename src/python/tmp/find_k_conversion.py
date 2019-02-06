@@ -64,7 +64,7 @@ def main(kvals):
     folds     = df['final_mRNA_structure']
     dG_finals = np.array(df['dG_total']) + np.array(df['dG_mRNA'])
 
-    dG_mRNAs_avg = []; dG_mRNAs_std = [];
+    dG_mRNAs_avg = []; dG_mRNAs_std = []; all_times = [];
 
     options = [custom_options(seq,fold0,kvals,dG_final) for seq, fold0, dG_final in zip(seqs,folds,dG_finals)]
 
@@ -73,14 +73,6 @@ def main(kvals):
         seq = output['sequence']
         avg = []; std = [];
 
-        print '----------'
-        print output['options']['trange']
-        print output['structures'][0]
-        print len(output['structures'][0])
-        print len(output['structures'])
-        wait = input('')
-        print '----------'
-
         # get time slices, and mean/std values at each time
         for i,time in enumerate(output['options']['trange']):
             if time == -1.0: break
@@ -88,17 +80,23 @@ def main(kvals):
             dGs   = [ViennaRNA.RNAeval([seq],[fold]) for fold in folds] # recalculated dGs
             avg.append( np.mean(dGs) )
             std.append( np.std(dGs)  )
+            times.append( output['options']['trange'] )
 
         # extend dG_mRNAs_avg and dG_mRNAs_std by end point to "backfill" kvals where the
         # simulation tau exceeded the max time (1000.0)
-        avg += [avg[-1]]*(len(kvals)-len(avg))
-        std += [std[-1]]*(len(kvals)-len(std))
+        avg   += [avg[-1]]*(len(kvals)-len(avg))
+        std   += [std[-1]]*(len(kvals)-len(std))
+        times += [times[-1]]*(len(kvals)-len(times))
 
         # append to master list
         dG_mRNAs_avg.append(avg)
         dG_mRNAs_std.append(std)
+        all_times.append(times)
 
     assert all(len(a)==len(kvals) for a in dG_mRNAs_avg)
+    assert all(len(a)==len(kvals) for a in dG_mRNAs_std)
+    assert all(len(a)==len(kvals) for a in all_times)
+
     # dG_mRNAs_avg = [[seq1...],[seq2...],[seq3...]]
     # calculate totals and statistics
     stats_table   = []
@@ -119,7 +117,9 @@ def main(kvals):
     df3 = pd.DataFrame(dG_mRNAs_std)#.transpose()
     # df3.columns = kvals[:i+1]
 
-    df4 = pd.DataFrame(all_dG_totals).transpose()
+    df4 = pd.DataFrame(all_times)
+
+    df5 = pd.DataFrame(all_dG_totals).transpose()
     # df4.columns = kvals[:i+1]
 
     writer = pd.ExcelWriter('identify_k.xlsx',engine='xlsxwriter')
@@ -127,6 +127,7 @@ def main(kvals):
     df2.to_excel(writer,sheet_name='Sheet2')
     df3.to_excel(writer,sheet_name='Sheet3')
     df4.to_excel(writer,sheet_name='Sheet4')
+    df5.to_excel(writer,sheet_name='Sheet5')
     writer.save()
 
 
