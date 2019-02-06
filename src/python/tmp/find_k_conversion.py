@@ -72,7 +72,7 @@ def main(kvals):
     for output in KFOLDWrapper.run(seqs,options):
         seq   = output['sequence']
         times = [val for val in output['options']['trange'] if val != -1.0]
-        times += [times[-1]]*(len(kvals)-len(times))
+        times += [times[-1]]*(len(kvals)+1-len(times))
         all_times.append(times)
         avg = []; std = [];
 
