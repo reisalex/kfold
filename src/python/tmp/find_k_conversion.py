@@ -86,18 +86,16 @@ def main(kvals):
 
         # extend dG_mRNAs_avg and dG_mRNAs_std by end point to "backfill" kvals where the
         # simulation tau exceeded the max time (1000.0)
-        avg   += [avg[-1]]*(len(kvals)-len(avg))
-        std   += [std[-1]]*(len(kvals)-len(std))
+        avg   += [avg[-1]]*(len(kvals)+1-len(avg))
+        std   += [std[-1]]*(len(kvals)+1-len(std))
 
         # append to master list
         dG_mRNAs_avg.append(avg)
         dG_mRNAs_std.append(std)
 
-    print len(kvals),[len(a) for a in dG_mRNAs_avg]
-
-    assert all(len(a)==len(kvals) for a in dG_mRNAs_avg)
-    assert all(len(a)==len(kvals) for a in dG_mRNAs_std)
-    assert all(len(a)==len(kvals) for a in all_times)
+    assert all(len(a)==len(kvals)+1 for a in dG_mRNAs_avg)
+    assert all(len(a)==len(kvals)+1 for a in dG_mRNAs_std)
+    assert all(len(a)==len(kvals)+1 for a in all_times)
 
     # dG_mRNAs_avg = [[seq1...],[seq2...],[seq3...]]
     # calculate totals and statistics
@@ -110,6 +108,15 @@ def main(kvals):
         (r,pvalue) = pearsonr(dG_totals,y)
         stats_table.append([k,r**2.0,RSS,K])
         all_dG_totals.append(dG_totals)
+
+    # do data-point beyond last k (equilibrium or tmax value)
+    dG_totals = dG_finals - np.array([avg[i+1] for avg in dG_mRNAs_avg])
+    y = np.log(df['PROT.MEAN'])
+    RSS, K = calc_total_error(dG_totals,y)
+    (r,pvalue) = pearsonr(dG_totals,y)
+    stats_table.append([k,r**2.0,RSS,K])
+    all_dG_totals.append(dG_totals)
+
 
     df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
 
