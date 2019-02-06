@@ -77,7 +77,6 @@ def kfold_unpack(args):
 #   fpt    :: list of first passage times (kfold a.u.)
 #   efpt   :: list of energy first passage times (kfold a.u.)
 def kfold_wrap(seq,fold0,foldf,ef,nsim,tmax,trange):
-    print trange
     traj,e,fpt,efpt = kfold.run(seq,fold0,foldf,ef,nsim,tmax,trange)
     folds = [["".join(traj[i][j][:len(seq)]) for j in xrange(len(trange))] for i in xrange(nsim)]
     dGs   = [[e[i][j] for j in xrange(len(trange))] for i in xrange(nsim)]
