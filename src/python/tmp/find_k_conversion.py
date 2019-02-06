@@ -46,7 +46,7 @@ def custom_options(seq, initial_structure, kvals, dG_final):
         nsim=1,
         tmax=times[-1],
         trange=np.array(times),#np.array(times),
-        pynsim=1000
+        pynsim=10
         )
 
 calc_y = lambda a0,a1,x: a1*x+a0
@@ -75,6 +75,8 @@ def main(kvals):
         print '----------'
         print output['options']['trange']
         print output['structures'][0]
+        print len(output['structures'][0])
+        print len(output['structures'])
         wait = input('')
         print '----------'
 

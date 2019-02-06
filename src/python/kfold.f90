@@ -117,8 +117,6 @@
         rna% iseq(:) = iseq(:)
         rna% n = nn
 
-        WRITE(*,*) times
-
         !=== SECTION 2 - Perform RNA Kinetics ===! 
 
         DO isim=1,nsim
@@ -155,6 +153,7 @@
               eout(isim,oindex) = e
 
               oindex = oindex + 1
+              WRITE(*,*) tout
               tout   = times(oindex)
               ! tout = tout + dt
 
