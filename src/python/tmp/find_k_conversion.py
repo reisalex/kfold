@@ -29,7 +29,8 @@ from PyVRNA import PyVRNA
 ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', pyindex=True)
 
 df = pd.read_csv('JACS_2017.csv')
-
+fulltime_mean = pd.read_excel('full_time_kfold_simulations_JACS.xlsx',sheet_name='Sheet1')
+fulltime_std  = pd.read_excel('full_time_kfold_simulations_JACS.xlsx',sheet_name='Sheet2')
 beta = 0.45
 
 def custom_options(seq, initial_structure, maxtime):
@@ -52,7 +53,7 @@ def calc_total_error(x,y):
     residuals = y - calc_y(res.x[0],beta,x)
     return np.sum(residuals**2.0), np.exp(res.x[0])
 
-def fun(x, fulltime_mean, fulltime_std):
+def fun(x):
     print "Initializing new iter with k={}".format(x[0])
     seqs      = list(df['used_mRNA_sequence'])
     folds     = df['final_mRNA_structure']
@@ -119,19 +120,16 @@ def simulate():
     df2.to_excel(writer,sheet_name='Sheet2')
     writer.save()
 
-    return df1, df2
-
-def main(fulltime_mean, fulltime_std):
+def main():
 
     kvals = map(float,[100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000, 25000, 50000, 75000, 100000, 250000, 500000, 1e6, 2500000])
-    kvals = [100.0, 250.0]
     stats_table     = []
     dG_totals_table = []
     dG_mRNAs_avg_table = []
     dG_mRNAs_std_table = []
 
     for i,k in enumerate(kvals):
-        R2, RSS, dG_mRNAs_avg, dG_mRNAs_std, dG_totals, K = fun([k], fulltime_mean, fulltime_std)
+        R2, RSS, dG_mRNAs_avg, dG_mRNAs_std, dG_totals, K = fun([k])
         print k, R2, RSS, K
         stats_table.append([k,R2,RSS,K])
         dG_mRNAs_avg_table.append(dG_mRNAs_avg)
@@ -157,5 +155,5 @@ def main(fulltime_mean, fulltime_std):
         writer.save()
 
 if __name__ == "__main__":
-    fulltime_mean, fulltime_std = simulate()
-    main(fulltime_mean, fulltime_std)
+    # simulate()
+    main()
