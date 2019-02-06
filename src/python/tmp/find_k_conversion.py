@@ -75,6 +75,7 @@ def main(kvals):
         print '----------'
         print output['options']['trange']
         print output['structures'][0]
+        wait = input('')
         print '----------'
 
         # get time slices, and mean/std values at each time
