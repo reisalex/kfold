@@ -131,6 +131,8 @@
           tout = times(oindex)
           time = tstart
 
+          WRITE(*,*) tout, tmax
+
           fstop = .TRUE.
           estop = .TRUE.
 
@@ -197,8 +199,6 @@
           
           trajout(isim,oindex,1:nn) = fld(1:nn)
           eout(isim,oindex) = e
-
-          WRITE(*,*) oindex
 
         ENDDO
 
