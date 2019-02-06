@@ -44,7 +44,7 @@ def custom_options(seq, initial_structure, kvals, dG_final):
         ef=0.95*fold.energy,
         nsim=1,
         tmax=times[-1],
-        trange=np.array(times),
+        trange=times,#np.array(times),
         pynsim=1000
         )
 
