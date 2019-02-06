@@ -148,7 +148,7 @@
 
             !=== Increment tout ===!
 
-            IF ( time > tout ) THEN
+            DO WHILE ( time > tout )
 
               trajout(isim,oindex,1:nn) = fld(1:nn)
               eout(isim,oindex) = e
@@ -164,7 +164,7 @@
                 ! dt = dt * 10.0d0
               ! ENDIF
 
-            ENDIF
+            ENDDO
 
             !=== Check for stop structure ===!
 
