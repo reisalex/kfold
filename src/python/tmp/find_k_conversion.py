@@ -35,14 +35,15 @@ beta = 0.45
 
 def custom_options(seq, initial_structure, kvals, dG_final):
     fold=ViennaRNA.RNAfold(seq)
-    times = np.array(filter(None,[t if t < 10.0 else None for t in kvals*np.exp(-beta*dG_final)]).append(10.0))
+    times = filter(None,[t if t < 10.0 else None for t in kvals*np.exp(-beta*dG_final)]).append(10.0)
+    print len(times)
     return dict(
         fold0=initial_structure,
         foldf=fold.structure,
         ef=0.95*fold.energy,
         nsim=1,
         tmax=times[-1],
-        trange=times,
+        trange=np.array(times),
         pynsim=1000
         )
 
