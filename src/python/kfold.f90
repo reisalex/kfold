@@ -21,7 +21,7 @@
 !
 ! =============================================================================
 
-      SUBROUTINE KFOLD(FASTA,STR0,STRF,EF,NSIM,TMAX,TRAJOUT,EOUT,FPT,EFPT)
+      SUBROUTINE KFOLD(FASTA,STR0,STRF,EF,NSIM,TMAX,TIMES,TRAJOUT,EOUT,FPT,EFPT)
 
         USE RNAVar, ONLY : mxnt
 
@@ -37,6 +37,7 @@
         REAL,                   INTENT(IN) :: ef
         INTEGER,                INTENT(IN) :: nsim
         DOUBLE PRECISION,       INTENT(IN) :: tmax
+        DOUBLE PRECISION,      INTENT(IN) :: times(100)
 
         CHARACTER,              INTENT(OUT) :: trajout(nsim,100,mxnt+1)
         REAL,                   INTENT(OUT) :: eout(nsim,100)
@@ -121,11 +122,14 @@
 
         DO isim=1,nsim
 
-          io = 1
-          oindex = 1
-          dt = 1.0d-2
+          ! io = 1
+          ! oindex = 1
+          ! dt = 1.0d-2
 
-          tout = dt
+          ! tout = dt
+
+          oindex = 1
+          tout = times(io)
           time = tstart
 
           fstop = .TRUE.
@@ -150,15 +154,15 @@
               eout(isim,oindex) = e
 
               oindex = oindex + 1
+              tout   = times(oindex)
+              ! tout = tout + dt
 
-              tout = tout + dt
+              ! io = io + 1
 
-              io = io + 1
-
-              IF ( io > 9 ) THEN
-                io = 1
-                dt = dt * 10.0d0
-              ENDIF
+              ! IF ( io > 9 ) THEN
+                ! io = 1
+                ! dt = dt * 10.0d0
+              ! ENDIF
 
             ENDIF
 

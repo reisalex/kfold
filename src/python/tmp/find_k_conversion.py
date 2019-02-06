@@ -33,15 +33,16 @@ fulltime_mean = pd.read_excel('full_time_kfold_simulations_JACS.xlsx',sheet_name
 fulltime_std  = pd.read_excel('full_time_kfold_simulations_JACS.xlsx',sheet_name='Sheet2')
 beta = 0.45
 
-def custom_options(seq, initial_structure, maxtime):
+def custom_options(seq, initial_structure, kvals, dG_final):
     fold=ViennaRNA.RNAfold(seq)
+    times = np.array(filter(None,[t if t < 10.0 else None for t in kvals*np.exp(-beta*dG_final)]).append(10.0))
     return dict(
         fold0=initial_structure,
         foldf=fold.structure,
         ef=0.95*fold.energy,
         nsim=1,
-        tmax=maxtime,
-        trange=KFOLDWrapper.get_trange(maxtime),
+        tmax=times[-1],
+        trange=times,
         pynsim=1000
         )
 
@@ -53,40 +54,70 @@ def calc_total_error(x,y):
     residuals = y - calc_y(res.x[0],beta,x)
     return np.sum(residuals**2.0), np.exp(res.x[0])
 
-def fun(x):
-    print "Initializing new iter with k={}".format(x[0])
+def main(kvals):
+    kvals     = np.array(kvals)
     seqs      = list(df['used_mRNA_sequence'])
     folds     = df['final_mRNA_structure']
-    dG_final  = np.array(df['dG_total']) + np.array(df['dG_mRNA'])
-    taus      = [t if t<1000.0 else 1000.0 for t in x[0]*np.exp(beta*dG_final)]
-    # options   = [custom_options(seq,fold0,tau) for seq,fold0,tau in zip(seqs,folds,taus)]
+    dG_finals = np.array(df['dG_total']) + np.array(df['dG_mRNA'])
 
-    dG_mRNAs_avg = []
-    dG_mRNAs_std = []
+    dG_mRNAs_avg = []; dG_mRNAs_std = [];
 
-    for i, (seq, fold0, tau) in enumerate(zip(seqs,folds,taus)):
+    options = [custom_options(seq,fold0,dG_final) for seq, fold0, dG_final in zip(seqs,folds,dG_finals)]
 
-        # extract existing values from fulltime simulations (completed first)
-        if tau == 1000.0:
-            dG_mRNAs_avg.append( fulltime_mean.iloc[i][-1] )
-            dG_mRNAs_std.append( fulltime_std.iloc[i][-1]  )
-            continue
+    # run simulations and iterate over sequences to collect kfold data
+    for output in KFOLDWrapper.run(seqs,options):
+        seq = output['sequence']
+        avg = []; std = [];
 
-        # only executing for one sequence
-        for output in KFOLDWrapper.run([seq],[custom_options(seq,fold0,tau)]):
-            seq = output['sequence']
-            foldsf = [filter(None,traj)[-1] for traj in output['structures']]
-            dGfs   = [ViennaRNA.RNAeval([seq],[fold]) for fold in foldsf]
-            dG_mRNAs_avg.append( np.mean(dGfs) )
-            dG_mRNAs_std.append( np.std(dGfs) )
+        # get time slices, and mean/std values at each time
+        for i,time in enumerate(output['options']['trange']):
+            folds = [traj[i] for traj in outpout['structures']] # ensemble at given time
+            dGs   = [ViennaRNA.RNAeval([seq],[fold]) for fold in folds] # recalculated dGs
+            avg.append( np.mean(dGs) )
+            std.append( np.std(dGs)  )
 
+        # extend dG_mRNAs_avg and dG_mRNAs_std by end point to "backfill" kvals where the
+        # simulation tau exceeded the max time (1000.0)
+        avg += [avg[-1]]*(len(kvals)-len(avg))
+        std += [std[-1]]*(len(kvals)-len(std))
+
+        # append to master list
+        dG_mRNAs_avg.append(avg)
+        dG_mRNAs_std.append(std)
+
+    assert all(len(a)==len(kvals) for a in dG_mRNAs_avg)
+    # dG_mRNAs_avg = [[seq1...],[seq2...],[seq3...]]
     # calculate totals and statistics
-    dG_totals = dG_final - np.array(dG_mRNAs_avg)
-    y = np.log(df['PROT.MEAN'])
-    SQE, K = calc_total_error(dG_totals,y)
-    (r,pvalue) = pearsonr(dG_totals,y)
+    stats_table   = []
+    all_dG_totals = []
+    for i,k in enumerate(kvals):
+        dG_totals = dG_finals - np.array([avg[i] for avg in dG_mRNAs_avg])
+        y = np.log(df['PROT.MEAN'])
+        RSS, K = calc_total_error(dG_totals,y)
+        (r,pvalue) = pearsonr(dG_totals,y)
+        stats_table.append([k,r**2.0,RSS,K])
+        all_dG_totals.append(dG_totals)
 
-    return r**2.0, SQE, dG_mRNAs_avg, dG_mRNAs_std, dG_totals, K
+    df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
+
+    df2 = pd.DataFrame(dG_mRNAs_avg)#.transpose()
+    # df2.columns = kvals[:i+1]
+
+    df3 = pd.DataFrame(dG_mRNAs_std)#.transpose()
+    # df3.columns = kvals[:i+1]
+
+    df4 = pd.DataFrame(all_dG_totals).transpose()
+    # df4.columns = kvals[:i+1]
+
+    writer = pd.ExcelWriter('identify_k.xlsx',engine='xlsxwriter')
+    df1.to_excel(writer,sheet_name='Sheet1')
+    df2.to_excel(writer,sheet_name='Sheet2')
+    df3.to_excel(writer,sheet_name='Sheet3')
+    df4.to_excel(writer,sheet_name='Sheet4')
+    writer.save()
+
+
+    return stats_table, dG_mRNAs_avg, dG_mRNAs_std, all_dG_totals
 
 def simulate():
     seqs    = list(df['used_mRNA_sequence'])
@@ -120,40 +151,9 @@ def simulate():
     df2.to_excel(writer,sheet_name='Sheet2')
     writer.save()
 
-def main():
-
-    kvals = map(float,[100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000, 25000, 50000, 75000, 100000, 250000, 500000, 1e6, 2500000])
-    stats_table     = []
-    dG_totals_table = []
-    dG_mRNAs_avg_table = []
-    dG_mRNAs_std_table = []
-
-    for i,k in enumerate(kvals):
-        R2, RSS, dG_mRNAs_avg, dG_mRNAs_std, dG_totals, K = fun([k])
-        print k, R2, RSS, K
-        stats_table.append([k,R2,RSS,K])
-        dG_mRNAs_avg_table.append(dG_mRNAs_avg)
-        dG_mRNAs_std_table.append(dG_mRNAs_std)
-        dG_totals_table.append(dG_totals)
-
-        df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
-
-        df2 = pd.DataFrame(dG_mRNAs_avg_table).transpose()
-        df2.columns = kvals[:i+1]
-
-        df3 = pd.DataFrame(dG_mRNAs_std_table).transpose()
-        df3.columns = kvals[:i+1]
-
-        df4 = pd.DataFrame(dG_totals_table).transpose()
-        df4.columns = kvals[:i+1]
-
-        writer = pd.ExcelWriter('identify_k.xlsx',engine='xlsxwriter')
-        df1.to_excel(writer,sheet_name='Sheet1')
-        df2.to_excel(writer,sheet_name='Sheet2')
-        df3.to_excel(writer,sheet_name='Sheet3')
-        df4.to_excel(writer,sheet_name='Sheet4')
-        writer.save()
 
 if __name__ == "__main__":
     # simulate()
-    main()
+    # kvals = map(float,[100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000, 25000, 50000, 75000, 100000, 250000, 500000, 1e6, 2500000])
+    kvals = map(float,[1000,2500])
+    main(kvals)

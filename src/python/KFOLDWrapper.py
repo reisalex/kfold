@@ -77,7 +77,7 @@ def kfold_unpack(args):
 #   fpt    :: list of first passage times (kfold a.u.)
 #   efpt   :: list of energy first passage times (kfold a.u.)
 def kfold_wrap(seq,fold0,foldf,ef,nsim,tmax,trange):
-    traj,e,fpt,efpt = kfold.run(seq,fold0,foldf,ef,nsim,tmax)
+    traj,e,fpt,efpt = kfold.run(seq,fold0,foldf,ef,nsim,tmax,trange)
     folds = [["".join(traj[i][j][:len(seq)]) for j in xrange(len(trange))] for i in xrange(nsim)]
     dGs   = [[e[i][j] for j in xrange(len(trange))] for i in xrange(nsim)]
     return folds,dGs,fpt,efpt
@@ -130,6 +130,7 @@ def run(sequences,options=None,optsfxn=get_default_options,N=NCPUS):
             # using tqdm to track progress
             output = dict(structures=[],energies=[],fpts=[],efpts=[])
             output['sequence'] = seq
+            output['options']  = opts
             for folds,dGs,fpts,efpts in tqdm.tqdm(pool.imap_unordered(kfold_unpack,repeat(inputs,opts['pynsim'])), total=opts['pynsim']):
                 output['structures'].extend(folds)
                 output['energies'].extend(dGs)
