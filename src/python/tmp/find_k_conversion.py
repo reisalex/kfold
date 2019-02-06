@@ -70,7 +70,10 @@ def main(kvals):
 
     # run simulations and iterate over sequences to collect kfold data
     for output in KFOLDWrapper.run(seqs,options):
-        seq = output['sequence']
+        seq   = output['sequence']
+        times = [val for val in output['options']['trange'] if val != -1.0]
+        times += [times[-1]]*(len(kvals)-len(times))
+        all_times.append(times)
         avg = []; std = [];
 
         # get time slices, and mean/std values at each time
@@ -80,18 +83,15 @@ def main(kvals):
             dGs   = [ViennaRNA.RNAeval([seq],[fold]) for fold in folds] # recalculated dGs
             avg.append( np.mean(dGs) )
             std.append( np.std(dGs)  )
-            times.append( output['options']['trange'] )
 
         # extend dG_mRNAs_avg and dG_mRNAs_std by end point to "backfill" kvals where the
         # simulation tau exceeded the max time (1000.0)
         avg   += [avg[-1]]*(len(kvals)-len(avg))
         std   += [std[-1]]*(len(kvals)-len(std))
-        times += [times[-1]]*(len(kvals)-len(times))
 
         # append to master list
         dG_mRNAs_avg.append(avg)
         dG_mRNAs_std.append(std)
-        all_times.append(times)
 
     assert all(len(a)==len(kvals) for a in dG_mRNAs_avg)
     assert all(len(a)==len(kvals) for a in dG_mRNAs_std)
