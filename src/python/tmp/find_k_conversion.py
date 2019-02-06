@@ -29,8 +29,6 @@ from PyVRNA import PyVRNA
 ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', pyindex=True)
 
 df = pd.read_csv('JACS_2017.csv')
-fulltime_mean = pd.read_excel('full_time_kfold_simulations_JACS.xlsx',sheet_name='Sheet1')
-fulltime_std  = pd.read_excel('full_time_kfold_simulations_JACS.xlsx',sheet_name='Sheet2')
 beta = 0.45
 
 def custom_options(seq, initial_structure, kvals, dG_final):
@@ -114,22 +112,24 @@ def main(kvals):
     y = np.log(df['PROT.MEAN'])
     RSS, K = calc_total_error(dG_totals,y)
     (r,pvalue) = pearsonr(dG_totals,y)
-    stats_table.append([k,r**2.0,RSS,K])
+    stats_table.append(['inf',r**2.0,RSS,K])
     all_dG_totals.append(dG_totals)
 
 
     df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
 
+    headers = kvals + ['inf']
+
     df2 = pd.DataFrame(dG_mRNAs_avg)#.transpose()
-    # df2.columns = kvals[:i+1]
+    df2.columns = headers
 
     df3 = pd.DataFrame(dG_mRNAs_std)#.transpose()
-    # df3.columns = kvals[:i+1]
+    df3.columns = headers
 
     df4 = pd.DataFrame(all_times)
 
     df5 = pd.DataFrame(all_dG_totals).transpose()
-    # df4.columns = kvals[:i+1]
+    df4.columns = headers
 
     writer = pd.ExcelWriter('identify_k.xlsx',engine='xlsxwriter')
     df1.to_excel(writer,sheet_name='Sheet1')
