@@ -50,7 +50,7 @@ def check_options(seq,optsdict):
     assert isinstance(optsdict['ef'],float)
     assert isinstance(optsdict['nsim'],int)
     assert isinstance(optsdict['tmax'],float)
-    assert isinstance(optsdict['trange'],list)
+    # assert isinstance(optsdict['trange'],list)
     assert isinstance(optsdict['pynsim'],int)
 
 # generate tuple for pool.map from dictionary

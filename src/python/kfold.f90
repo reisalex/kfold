@@ -37,7 +37,7 @@
         REAL,                   INTENT(IN) :: ef
         INTEGER,                INTENT(IN) :: nsim
         DOUBLE PRECISION,       INTENT(IN) :: tmax
-        DOUBLE PRECISION,      INTENT(IN) :: times(100)
+        DOUBLE PRECISION,       INTENT(IN) :: times(100)
 
         CHARACTER,              INTENT(OUT) :: trajout(nsim,100,mxnt+1)
         REAL,                   INTENT(OUT) :: eout(nsim,100)
