@@ -153,7 +153,6 @@
               eout(isim,oindex) = e
 
               oindex = oindex + 1
-              WRITE(*,*) tout
               tout   = times(oindex)
               ! tout = tout + dt
 
@@ -198,6 +197,8 @@
           
           trajout(isim,oindex,1:nn) = fld(1:nn)
           eout(isim,oindex) = e
+
+          WRITE(*,*) oindex
 
         ENDDO
 

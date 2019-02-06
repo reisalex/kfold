@@ -37,6 +37,7 @@ def custom_options(seq, initial_structure, kvals, dG_final):
     fold=ViennaRNA.RNAfold(seq)
     times = [t for t in kvals/np.exp(-beta*dG_final) if t < 10.0]
     times.append(10.0)
+    tmax = times[-1]
     times += [-1.0]*(100-len(times[:]))
     assert len(times) == 100
     return dict(
@@ -44,7 +45,7 @@ def custom_options(seq, initial_structure, kvals, dG_final):
         foldf=fold.structure,
         ef=0.95*fold.energy,
         nsim=1,
-        tmax=times[-1],
+        tmax=tmax,
         trange=np.array(times),#np.array(times),
         pynsim=10
         )
