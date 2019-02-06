@@ -129,7 +129,7 @@
           ! tout = dt
 
           oindex = 1
-          tout = times(io)
+          tout = times(oindex)
           time = tstart
 
           fstop = .TRUE.
