@@ -149,8 +149,6 @@
 
             IF ( time > tout ) THEN
 
-              WRITE(*,*) time, tout
-
               trajout(isim,oindex,1:nn) = fld(1:nn)
               eout(isim,oindex) = e
 
@@ -196,9 +194,6 @@
             ENDIF
 
           ENDDO
-          
-          trajout(isim,oindex,1:nn) = fld(1:nn)
-          eout(isim,oindex) = e
 
         ENDDO
 
