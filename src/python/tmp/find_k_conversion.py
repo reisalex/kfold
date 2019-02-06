@@ -75,6 +75,8 @@ def main(kvals):
         # get time slices, and mean/std values at each time
         for i,time in enumerate(output['options']['trange']):
             folds = [traj[i] for traj in output['structures']] # ensemble at given time
+            print folds
+            quit()
             dGs   = [ViennaRNA.RNAeval([seq],[fold]) for fold in folds] # recalculated dGs
             avg.append( np.mean(dGs) )
             std.append( np.std(dGs)  )
