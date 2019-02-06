@@ -118,7 +118,7 @@ def main(kvals):
 
     df1 = pd.DataFrame(stats_table, columns=['k1','R^2','RSS','K'])
 
-    headers = kvals + ['inf']
+    headers = list(kvals) + ['inf']
 
     df2 = pd.DataFrame(dG_mRNAs_avg)#.transpose()
     df2.columns = headers
