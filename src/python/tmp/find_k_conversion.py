@@ -33,8 +33,8 @@ beta = 0.45
 
 def custom_options(seq, initial_structure, kvals, dG_final):
     fold=ViennaRNA.RNAfold(seq)
-    times = [t for t in kvals/np.exp(-beta*dG_final) if t < 100.0]
-    times.append(100.0)
+    times = [t for t in kvals/np.exp(-beta*dG_final) if t < 1000.0]
+    times.append(1000.0)
     tmax = times[-1]
     times += [-1.0]*(100-len(times[:]))
     assert len(times) == 100
@@ -45,7 +45,7 @@ def custom_options(seq, initial_structure, kvals, dG_final):
         nsim=1,
         tmax=tmax,
         trange=np.array(times),#np.array(times),
-        pynsim=10
+        pynsim=1000
         )
 
 calc_y = lambda a0,a1,x: a1*x+a0
@@ -133,11 +133,11 @@ def main(kvals):
     df5.columns = headers
 
     writer = pd.ExcelWriter('identify_k.xlsx',engine='xlsxwriter')
-    df1.to_excel(writer,sheet_name='Sheet1')
-    df2.to_excel(writer,sheet_name='Sheet2')
-    df3.to_excel(writer,sheet_name='Sheet3')
-    df4.to_excel(writer,sheet_name='Sheet4')
-    df5.to_excel(writer,sheet_name='Sheet5')
+    df1.to_excel(writer,sheet_name='stats')
+    df2.to_excel(writer,sheet_name='dG_mRNA_mean')
+    df3.to_excel(writer,sheet_name='dG_mRNA_std')
+    df4.to_excel(writer,sheet_name='taus')
+    df5.to_excel(writer,sheet_name='dG_total')
     writer.save()
 
 
@@ -179,5 +179,4 @@ def simulate():
 if __name__ == "__main__":
     # simulate()
     kvals = map(float,[100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000, 25000, 50000, 75000, 100000, 250000, 500000, 1e6, 2500000])
-    kvals = map(float,[100,250,500,5000])
     main(kvals)
