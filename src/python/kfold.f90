@@ -117,6 +117,7 @@
         rna% iseq(:) = iseq(:)
         rna% n = nn
 
+        WRITE(*,*) times
 
         !=== SECTION 2 - Perform RNA Kinetics ===! 
 
