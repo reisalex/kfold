@@ -62,7 +62,7 @@ def main(kvals):
 
     dG_mRNAs_avg = []; dG_mRNAs_std = [];
 
-    options = [custom_options(seq,fold0,dG_final) for seq, fold0, dG_final in zip(seqs,folds,dG_finals)]
+    options = [custom_options(seq,fold0,kvals,dG_final) for seq, fold0, dG_final in zip(seqs,folds,dG_finals)]
 
     # run simulations and iterate over sequences to collect kfold data
     for output in KFOLDWrapper.run(seqs,options):
