@@ -131,8 +131,6 @@
           tout = times(oindex)
           time = tstart
 
-          WRITE(*,*) tout, tmax
-
           fstop = .TRUE.
           estop = .TRUE.
 
@@ -150,6 +148,8 @@
             !=== Increment tout ===!
 
             IF ( time > tout ) THEN
+
+              WRITE(*,*) time, tout
 
               trajout(isim,oindex,1:nn) = fld(1:nn)
               eout(isim,oindex) = e
