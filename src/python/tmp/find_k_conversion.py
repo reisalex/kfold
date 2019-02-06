@@ -37,7 +37,7 @@ def custom_options(seq, initial_structure, kvals, dG_final):
     fold=ViennaRNA.RNAfold(seq)
     times = [t for t in kvals/np.exp(-beta*dG_final) if t < 10.0]
     times.append(10.0)
-    times += [0.0]*(100-len(times[:]))
+    times += [-1.0]*(100-len(times[:]))
     assert len(times) == 100
     return dict(
         fold0=initial_structure,
@@ -74,9 +74,8 @@ def main(kvals):
 
         # get time slices, and mean/std values at each time
         for i,time in enumerate(output['options']['trange']):
+            if time == -1.0: break
             folds = [traj[i] for traj in output['structures']] # ensemble at given time
-            print folds
-            quit()
             dGs   = [ViennaRNA.RNAeval([seq],[fold]) for fold in folds] # recalculated dGs
             avg.append( np.mean(dGs) )
             std.append( np.std(dGs)  )
