@@ -93,7 +93,7 @@ def main(kvals):
         dG_mRNAs_avg.append(avg)
         dG_mRNAs_std.append(std)
 
-    print dG_mRNAs_avg[0]
+    print len(kvals),[len(a) for a in dG_mRNAs_avg]
 
     assert all(len(a)==len(kvals) for a in dG_mRNAs_avg)
     assert all(len(a)==len(kvals) for a in dG_mRNAs_std)
