@@ -72,6 +72,11 @@ def main(kvals):
         seq = output['sequence']
         avg = []; std = [];
 
+        print '----------'
+        print output['options']['trange']
+        print output['structures'][0]
+        print '----------'
+
         # get time slices, and mean/std values at each time
         for i,time in enumerate(output['options']['trange']):
             if time == -1.0: break
