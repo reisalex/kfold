@@ -203,11 +203,11 @@ def simulate():
         all_mean_dGs.append(mean_dGs)
         all_std_dGs.append(std_dGs)
 
-    df1 = pd.DataFrame(all_mean_dGs, columns=options[0]['trange'])
+    df1 = pd.DataFrame(all_mean_dGs)
     df1.insert(0, column='sequence', value=seqs)
     df1.insert(1, column='initial_structure', value=folds)
 
-    df2 = pd.DataFrame(all_std_dGs, columns=options[0]['trange'])
+    df2 = pd.DataFrame(all_std_dGs)
     df2.insert(0, column='sequence', value=seqs)
     df2.insert(1, column='initial_structure', value=folds)
 
