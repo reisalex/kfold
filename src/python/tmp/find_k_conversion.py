@@ -185,7 +185,7 @@ def main(kvals):
 def simulate():
     seqs    = list(df['used_mRNA_sequence'])
     folds   = df['final_mRNA_structure']
-    options = [custom_options(seq,fold0) for seq,fold0 in zip(seqs,folds)]
+    options = [custom_options2(seq,fold0) for seq,fold0 in zip(seqs,folds)]
     all_mean_dGs = list()
     all_std_dGs  = list()
     for output in KFOLDWrapper.run(seqs,options):
