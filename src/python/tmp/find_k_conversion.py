@@ -26,7 +26,7 @@ from scipy.optimize import minimize, fmin_bfgs, fmin_l_bfgs_b
 sys.path.append('..')
 import KFOLDWrapper
 from PyVRNA import PyVRNA
-ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', dangle=0, pyindex=True)
+ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', dangles=0, pyindex=True)
 
 df = pd.read_csv('JACS_2017.csv')
 beta = 0.45
