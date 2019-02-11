@@ -26,7 +26,7 @@ from scipy.optimize import minimize, fmin_bfgs, fmin_l_bfgs_b
 sys.path.append('..')
 import KFOLDWrapper
 from PyVRNA import PyVRNA
-ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', pyindex=True)
+ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', dangle=0, pyindex=True)
 
 df = pd.read_csv('JACS_2017.csv')
 beta = 0.45
@@ -47,6 +47,45 @@ def custom_options(seq, initial_structure, kvals, dG_final):
         trange=np.array(times),#np.array(times),
         pynsim=1000
         )
+
+def get_trange(tmax):
+    dt = 0.01
+    io = 1
+    trange = [dt]
+    while (dt < tmax):
+        trange.append(trange[-1]+dt)
+        io += 1
+        if (io > 9):
+            io = 1
+            dt *= 10.0
+    return trange
+
+def custom_options2(seq, initial_structure):
+    fold=ViennaRNA.RNAfold(seq)
+    maxtime=1000.0
+    return dict(
+        fold0=initial_structure,
+        foldf=fold.structure,
+        ef=0.95*fold.energy,
+        nsim=1,
+        tmax=maxtime,
+        trange=get_trange(maxtime),
+        pynsim=1000
+        )
+
+def get_default_options(seq):
+    maxtime=1000.0
+    fold=ViennaRNA.RNAfold(seq)
+    return dict(
+        fold0='.'*len(seq),               # starting structure
+        foldf=fold.structure,             # first passage time search structure
+        ef=0.95*fold.energy,              # energy first passage time threshold value
+        nsim=1,                           # number of simulations internal to kfold (serial)
+        tmax=maxtime,                     # total simulation time (kfold units)
+        trange=get_trange(maxtime),       # time points at which to collect data
+        pynsim=1000                       # number of simulations through multiprocessing (parallel)
+        )                                 # total number of simulations ends up being nsim*pynsim
+
 
 calc_y = lambda a0,a1,x: a1*x+a0
 
@@ -146,7 +185,7 @@ def main(kvals):
 def simulate():
     seqs    = list(df['used_mRNA_sequence'])
     folds   = df['final_mRNA_structure']
-    options = [custom_options(seq,fold0,1000.0) for seq,fold0 in zip(seqs,folds)]
+    options = [custom_options(seq,fold0) for seq,fold0 in zip(seqs,folds)]
     all_mean_dGs = list()
     all_std_dGs  = list()
     for output in KFOLDWrapper.run(seqs,options):
@@ -177,6 +216,6 @@ def simulate():
 
 
 if __name__ == "__main__":
-    # simulate()
-    kvals = map(float,[100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000, 25000, 50000, 75000, 100000, 250000, 500000, 1e6, 2500000, 5000000, 7500000, 1e7])
-    main(kvals)
+    simulate()
+    # kvals = map(float,[100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000, 25000, 50000, 75000, 100000, 250000, 500000, 1e6, 2500000, 5000000, 7500000, 1e7])
+    # main(kvals)
