@@ -63,6 +63,8 @@ def get_trange(tmax):
 def custom_options2(seq, initial_structure):
     fold=ViennaRNA.RNAfold(seq)
     maxtime=1000.0
+    times = get_trange(maxtime)
+    times = times[:] + [-1.0]*(100-len(times[:]))
     return dict(
         fold0=initial_structure,
         foldf=fold.structure,
