@@ -71,7 +71,7 @@ def custom_options2(seq, initial_structure):
         ef=0.95*fold.energy,
         nsim=1,
         tmax=maxtime,
-        trange=get_trange(maxtime),
+        trange=times,
         pynsim=1000
         )
 
