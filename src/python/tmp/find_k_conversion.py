@@ -26,7 +26,7 @@ from scipy.optimize import minimize, fmin_bfgs, fmin_l_bfgs_b
 sys.path.append('..')
 import KFOLDWrapper
 from PyVRNA import PyVRNA
-ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', dangles=0, pyindex=True)
+ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', dangles=2, pyindex=True)
 
 df = pd.read_csv('JACS_2017.csv')
 beta = 0.45
@@ -211,7 +211,7 @@ def simulate():
     df2.insert(0, column='sequence', value=seqs)
     df2.insert(1, column='initial_structure', value=folds)
 
-    writer = pd.ExcelWriter('full_time_kfold_simulations_JACS.xlsx',engine='xlsxwriter')
+    writer = pd.ExcelWriter('full_time_kfold_simulations_JACS_with_dangle.xlsx',engine='xlsxwriter')
     df1.to_excel(writer,sheet_name='Sheet1')
     df2.to_excel(writer,sheet_name='Sheet2')
     writer.save()
