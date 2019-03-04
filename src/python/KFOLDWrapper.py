@@ -27,8 +27,7 @@ def get_trange(tmax):
         if (io > 9):
             io = 1
             dt *= 10.0
-    l = len(trange)
-    trange += [-1.0]*len(trange[:])
+    trange += [-1.0]*(100-len(trange[:]))
     return trange
 
 # return a dictionary containing the default options for simulation
