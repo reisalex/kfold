@@ -36,7 +36,7 @@
         CHARACTER,        INTENT(OUT) :: strfinal(nsim,10001)
         REAL,             INTENT(OUT) :: efinal(nsim)
 
-        CALL KFOLD(fasta,str0,strf,ef,nsim,tmax,times,trajout,eout,strfinal,efinal,fpt)
+        CALL KFOLD(fasta,str0,strf,nsim,tmax,times,trajout,eout,strfinal,efinal,fpt)
 
         RETURN
 
