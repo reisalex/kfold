@@ -18,14 +18,13 @@
 !
 ! ==============================================================================
 
-      SUBROUTINE RUN(FASTA, STR0, STRF, EF, NSIM, TMAX, TIMES, TRAJOUT, EOUT, FPT, EFPT)
+      SUBROUTINE RUN(FASTA, STR0, STRF, NSIM, TMAX, TIMES, TRAJOUT, EOUT, STRFINAL, EFINAL, FPT)
 
         IMPLICIT NONE
 
         CHARACTER (LEN=10001), INTENT(IN) :: fasta
         CHARACTER (LEN=10000), INTENT(IN) :: str0
         CHARACTER (LEN=10000), INTENT(IN) :: strf
-        REAL,                  INTENT(IN) :: ef
         DOUBLE PRECISION,      INTENT(IN) :: tmax
         INTEGER,               INTENT(IN) :: nsim
         DOUBLE PRECISION,      INTENT(IN) :: times(100)
@@ -33,9 +32,11 @@
         CHARACTER,        INTENT(OUT) :: trajout(nsim,100,10001)
         REAL,             INTENT(OUT) :: eout(nsim,100)
         DOUBLE PRECISION, INTENT(OUT) :: fpt(nsim)
-        DOUBLE PRECISION, INTENT(OUT) :: efpt(nsim)
+        
+        CHARACTER,        INTENT(OUT) :: strfinal(nsim,10001)
+        REAL,             INTENT(OUT) :: efinal(nsim)
 
-        CALL KFOLD(fasta,str0,strf,ef,nsim,tmax,times,trajout,eout,fpt,efpt)
+        CALL KFOLD(fasta,str0,strf,ef,nsim,tmax,times,trajout,eout,strfinal,efinal,fpt)
 
         RETURN
 

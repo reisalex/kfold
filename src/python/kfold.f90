@@ -21,7 +21,7 @@
 !
 ! =============================================================================
 
-      SUBROUTINE KFOLD(FASTA,STR0,STRF,EF,NSIM,TMAX,TIMES,TRAJOUT,EOUT,FPT,EFPT)
+      SUBROUTINE KFOLD(FASTA,STR0,STRF,NSIM,TMAX,TIMES,TRAJOUT,EOUT,STRFINAL,EFINAL,FPT)
 
         USE RNAVar, ONLY : mxnt
 
@@ -34,7 +34,6 @@
         CHARACTER (LEN=mxnt+1), INTENT(IN) :: fasta
         CHARACTER (LEN=mxnt),   INTENT(IN) :: str0
         CHARACTER (LEN=mxnt),   INTENT(IN) :: strf
-        REAL,                   INTENT(IN) :: ef
         INTEGER,                INTENT(IN) :: nsim
         DOUBLE PRECISION,       INTENT(IN) :: tmax
         DOUBLE PRECISION,       INTENT(IN) :: times(100)
@@ -42,7 +41,8 @@
         CHARACTER,              INTENT(OUT) :: trajout(nsim,100,mxnt+1)
         REAL,                   INTENT(OUT) :: eout(nsim,100)
         DOUBLE PRECISION,       INTENT(OUT) :: fpt(nsim)
-        DOUBLE PRECISION,       INTENT(OUT) :: efpt(nsim)
+        CHARACTER,              INTENT(OUT) :: strfinal(nsim,mxnt+1)
+        REAL,                   INTENT(OUT) :: efinal(nsim)
 
         !=== VARIABLES ===!
 
@@ -182,18 +182,10 @@
 
             ENDIF
 
-            !=== Check for stop energy threshold ===!
-
-            IF ( estop ) THEN
-
-              IF ( e <= ef ) THEN
-                efpt(isim) = time
-                estop = .FALSE.
-              ENDIF
-
-            ENDIF
-
           ENDDO
+
+          strfinal(isim,1:nn) = fld(1:nn)
+          efinal(nsim) = e
 
         ENDDO
 

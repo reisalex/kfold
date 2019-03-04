@@ -36,7 +36,6 @@ def get_default_options(seq):
     return dict(
         fold0='.'*len(seq),               # starting structure
         foldf=fold.structure,             # first passage time search structure
-        ef=0.95*fold.energy,              # energy first passage time threshold value
         nsim=1,                           # number of simulations internal to kfold (serial)
         tmax=maxtime,                     # total simulation time (kfold units)
         trange=get_trange(maxtime),       # time points at which to collect data
@@ -47,15 +46,13 @@ def get_default_options(seq):
 def check_options(seq,optsdict):
     assert len(optsdict['fold0'])==len(seq)
     assert len(optsdict['foldf'])==len(seq)
-    assert isinstance(optsdict['ef'],float)
     assert isinstance(optsdict['nsim'],int)
     assert isinstance(optsdict['tmax'],float)
-    # assert isinstance(optsdict['trange'],list)
     assert isinstance(optsdict['pynsim'],int)
 
 # generate tuple for pool.map from dictionary
 def make_input_tuple(seq,optsdict):
-    return tuple([seq]+[optsdict[x] for x in ['fold0','foldf','ef','nsim','tmax','trange']])
+    return tuple([seq]+[optsdict[x] for x in ['fold0','foldf','nsim','tmax','trange']])
 
 # helper function to call kfold with pool.map
 def kfold_unpack(args):
@@ -76,11 +73,12 @@ def kfold_unpack(args):
 #   dGs    :: list of lists with free energies (kcal/mol)
 #   fpt    :: list of first passage times (kfold a.u.)
 #   efpt   :: list of energy first passage times (kfold a.u.)
-def kfold_wrap(seq,fold0,foldf,ef,nsim,tmax,trange):
-    traj,e,fpt,efpt = kfold.run(seq,fold0,foldf,ef,nsim,tmax,trange)
+def kfold_wrap(seq,fold0,foldf,nsim,tmax,trange):
+    traj,e,strfinal,efinal,fpt = kfold.run(seq,fold0,foldf,nsim,tmax,trange)
     folds = [["".join(traj[i][j][:len(seq)]) for j in xrange(len(trange))] for i in xrange(nsim)]
     dGs   = [[e[i][j] for j in xrange(len(trange))] for i in xrange(nsim)]
-    return folds,dGs,fpt,efpt
+    foldsf = ["".join(strfinal[i][:len(seq)]) for i in xrange(nsim)]
+    return folds,dGs,fpt,foldsf,efinal
 
 # Python 3.3 this can be all replaced with pool.starmap() which accepts a sequence of
 # argument tuples, and then automatically unpacks the arguments from each tuple; see:
@@ -128,14 +126,15 @@ def run(sequences,options=None,optsfxn=get_default_options,N=NCPUS):
             # results = pool.map(kfold_unpack,repeat(input_tuple,options['pynsim']))
             
             # using tqdm to track progress
-            output = dict(structures=[],energies=[],fpts=[],efpts=[])
+            output = dict(structures=[],energies=[],fpts=[])
             output['sequence'] = seq
             output['options']  = opts
-            for folds,dGs,fpts,efpts in tqdm.tqdm(pool.imap_unordered(kfold_unpack,repeat(inputs,opts['pynsim'])), total=opts['pynsim']):
+            for folds,dGs,fpts,foldsf,efinal in tqdm.tqdm(pool.imap_unordered(kfold_unpack,repeat(inputs,opts['pynsim'])), total=opts['pynsim']):
                 output['structures'].extend(folds)
                 output['energies'].extend(dGs)
                 output['fpts'].extend(fpts)
-                output['efpts'].extend(efpts)
+                output['foldsf'].extend(foldsf)
+                output['efinal'].extend(efinal)
 
             yield output
 
