@@ -19,7 +19,7 @@ def get_options(seq, maxtime):
         foldf=fold.structure,
         nsim=1,
         tmax=maxtime,
-        trange=get_trange(maxtime),
+        trange=KFOLDWrapper.get_trange(maxtime),
         pynsim=1000
         )
 
