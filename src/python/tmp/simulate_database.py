@@ -9,7 +9,6 @@ import KFOLDWrapper
 from PyVRNA import PyVRNA
 ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', dangles=0, pyindex=True)
 
-df = pd.read_csv('rbscalc21_ICdatabase.csv')
 beta = 0.45
 k = 31.5
 
@@ -25,6 +24,7 @@ def get_options(seq, maxtime):
         )
 
 def simulate():
+    df = pd.read_csv('rbscalc21_ICdatabase.csv')
     used_seqs  = list(df['used_mRNA_sequence'])
     dG_16S_SDs = list(df['dG_SD_16S_hybrid'])
     cutoffs    = list(df['most_5p_paired_SD_mRNA'])
@@ -40,10 +40,10 @@ def simulate():
         mean_dGs.append(mean)
         std_dGs.append(std)
 
-    df = pd.DataFrame()
-    df['dG_mean'] = mean_dGs
-    df['dG_stdev'] = std_dGs
-    df.to_csv('all_simulation_output_at_tau.csv')
+    dfo = pd.DataFrame()
+    dfo['dG_mean'] = mean_dGs
+    dfo['dG_stdev'] = std_dGs
+    dfo.to_csv('all_simulation_output_at_tau.csv')
 
 if __name__ == "__main__":
     simulate()
