@@ -29,7 +29,7 @@ def simulate():
     dG_16S_SDs = list(df['dG_SD_16S_hybrid'])
     cutoffs    = list(df['most_5p_paired_SD_mRNA'])
     seqs = [s[c:] for s,c in zip(used_seqs,cutoffs)]
-    options = [get_options(seq, k*np.exp(beta * dG_16S_SDs) ) for seq,dG_16S_SD in zip(seqs,dG_16S_SDs)]
+    options = [get_options(seq, k*np.exp(beta * dG_16S_SD) ) for seq,dG_16S_SD in zip(seqs,dG_16S_SDs)]
 
     mean_dGs = []; std_dGs = [];
     for output in KFOLDWrapper.run(seqs,options):
