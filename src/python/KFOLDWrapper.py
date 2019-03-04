@@ -127,7 +127,7 @@ def run(sequences,options=None,optsfxn=get_default_options,N=NCPUS):
             # results = pool.map(kfold_unpack,repeat(input_tuple,options['pynsim']))
             
             # using tqdm to track progress
-            output = dict(structures=[],energies=[],fpts=[])
+            output = dict(structures=[],energies=[],fpts=[],foldsf=[],efinal=[])
             output['sequence'] = seq
             output['options']  = opts
             for folds,dGs,fpts,foldsf,efinal in tqdm.tqdm(pool.imap_unordered(kfold_unpack,repeat(inputs,opts['pynsim'])), total=opts['pynsim']):
