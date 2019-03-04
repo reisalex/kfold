@@ -141,7 +141,7 @@ def run(sequences,options=None,optsfxn=get_default_options,N=NCPUS):
 
 def test_wrap():
     seq='ATTCTTAGGGGCGGAGCGGCGCGGCGCCCCTAAGAATTTTT'
-    folds,dGs,fpt,efpt = kfold_unpack(make_input_tuple(seq,get_default_options(seq)))
+    folds,dGs,fpts,foldsf,efinal = kfold_unpack(make_input_tuple(seq,get_default_options(seq)))
     print folds
     print dGs
 
@@ -154,5 +154,5 @@ def test():
         pass
 
 if __name__ == "__main__":
-    # test_wrap()
-    test()
+    test_wrap()
+    #test()
