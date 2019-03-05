@@ -28,7 +28,7 @@ def simulate():
     df = pd.read_csv('rbscalc21_ICdatabase.csv')
     used_seqs  = list(df['used_mRNA_sequence'])
     dG_16S_SDs = list(df['dG_SD_16S_hybrid'])
-    dG_standby = list(df['dG_standby'])
+    dG_standbys = list(df['dG_standby'])
     cutoffs    = list(df['most_5p_paired_SD_mRNA'])
     seqs = [s[c:] for s,c in zip(used_seqs,cutoffs)]
     options = [get_options(seq, k*np.exp(beta * (dG_16S_SD + dG_standby)) ) for seq, dG_16S_SD, dG_standby in zip(seqs,dG_16S_SDs,dG_standbys)]
