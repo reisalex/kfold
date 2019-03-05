@@ -31,7 +31,7 @@ def simulate():
     dG_16S_SDs = list(df['dG_SD_16S_hybrid'])
     dG_standbys = list(df['dG_standby'])
     cutoffs    = list(df['most_5p_paired_SD_mRNA'])
-    seqs = [s[c:] for s,c in zip(used_seqs,cutoffs)]
+    seqs = [s[c:-21] for s,c in zip(used_seqs,cutoffs)]
     options = [get_options(seq, k*np.exp(beta * (dG_16S_SD + dG_standby)) ) for seq, dG_16S_SD, dG_standby in zip(seqs,dG_16S_SDs,dG_standbys)]
 
     mean_dGs = []; std_dGs = [];
@@ -46,7 +46,7 @@ def simulate():
     dfo = pd.DataFrame()
     dfo['dG_mean'] = mean_dGs
     dfo['dG_stdev'] = std_dGs
-    dfo.to_csv('all_simulation_output_at_tau_2terms_fullseq.csv')
+    dfo.to_csv('all_simulation_output_at_tau_2terms_footprint.csv')
 
 if __name__ == "__main__":
     simulate()
