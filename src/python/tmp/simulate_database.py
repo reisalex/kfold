@@ -15,6 +15,7 @@ k = 8.1
 
 def get_options(seq, maxtime):
     fold=ViennaRNA.RNAfold(seq)
+    if maxtime > 1000.0: maxtime = 1000.0
     return dict(
         fold0='.'*len(seq),
         foldf=fold.structure,
