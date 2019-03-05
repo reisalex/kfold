@@ -28,7 +28,7 @@ def simulate():
     used_seqs  = list(df['used_mRNA_sequence'])
     dG_16S_SDs = list(df['dG_SD_16S_hybrid'])
     cutoffs    = list(df['most_5p_paired_SD_mRNA'])
-    seqs = [s[c:] for s,c in zip(used_seqs,cutoffs)]
+    seqs = [s[c:-22] for s,c in zip(used_seqs,cutoffs)]
     options = [get_options(seq, k*np.exp(beta * dG_16S_SD) ) for seq,dG_16S_SD in zip(seqs,dG_16S_SDs)]
 
     mean_dGs = []; std_dGs = [];
@@ -43,7 +43,7 @@ def simulate():
     dfo = pd.DataFrame()
     dfo['dG_mean'] = mean_dGs
     dfo['dG_stdev'] = std_dGs
-    dfo.to_csv('all_simulation_output_at_tau.csv')
+    dfo.to_csv('all_simulation_output_at_tau_seq2footprint.csv')
 
 if __name__ == "__main__":
     simulate()
