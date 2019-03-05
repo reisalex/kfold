@@ -10,7 +10,8 @@ from PyVRNA import PyVRNA
 ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', dangles=0, pyindex=True)
 
 beta = 0.45
-k = 31.5
+# k = 31.5
+k = 8.1
 
 def get_options(seq, maxtime):
     fold=ViennaRNA.RNAfold(seq)
@@ -27,9 +28,10 @@ def simulate():
     df = pd.read_csv('rbscalc21_ICdatabase.csv')
     used_seqs  = list(df['used_mRNA_sequence'])
     dG_16S_SDs = list(df['dG_SD_16S_hybrid'])
+    dG_standby = list(df['dG_standby'])
     cutoffs    = list(df['most_5p_paired_SD_mRNA'])
-    seqs = [s[c:-21] for s,c in zip(used_seqs,cutoffs)]
-    options = [get_options(seq, k*np.exp(beta * dG_16S_SD) ) for seq,dG_16S_SD in zip(seqs,dG_16S_SDs)]
+    seqs = [s[c:] for s,c in zip(used_seqs,cutoffs)]
+    options = [get_options(seq, k*np.exp(beta * (dG_16S_SD + dG_standby)) ) for seq, dG_16S_SD, dG_standby in zip(seqs,dG_16S_SDs,dG_standbys)]
 
     mean_dGs = []; std_dGs = [];
     for output in KFOLDWrapper.run(seqs,options):
@@ -43,7 +45,7 @@ def simulate():
     dfo = pd.DataFrame()
     dfo['dG_mean'] = mean_dGs
     dfo['dG_stdev'] = std_dGs
-    dfo.to_csv('all_simulation_output_at_tau_seq2footprint.csv')
+    dfo.to_csv('all_simulation_output_at_tau_2terms_fullseq.csv')
 
 if __name__ == "__main__":
     simulate()
