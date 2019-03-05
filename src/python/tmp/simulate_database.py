@@ -1,4 +1,5 @@
 import sys
+import subprocess
 import shelve
 import numpy as np
 import pandas as pd
@@ -8,6 +9,7 @@ sys.path.append('..')
 import KFOLDWrapper
 from PyVRNA import PyVRNA
 ViennaRNA = PyVRNA(parameter_file='rna_andronescu2007.par', dangles=0, pyindex=True)
+
 
 beta = 0.45
 # k = 31.5
@@ -49,4 +51,5 @@ def simulate():
     dfo.to_csv('all_simulation_output_at_tau_2terms_footprint.csv')
 
 if __name__ == "__main__":
-    simulate()
+    # simulate()
+    subprocess.call(['aws','ec2','stop-instances','--instance-ids','i-0cea06162128534da'])
