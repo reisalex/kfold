@@ -149,7 +149,7 @@
           STOP
         ENDIF
 
-        READ(fasta,'(10000A1)')(seq(k),k=1,nn)
+        READ(fasta,'(30000A1)')(seq(k),k=1,nn)
 
         READ(1,*,IOSTAT=io)fasta
 
@@ -159,7 +159,7 @@
 
           !=== Start Structure Specified ===!
 
-          READ(fasta,'(10000A1)')(fld(k),k=1,nn)
+          READ(fasta,'(30000A1)')(fld(k),k=1,nn)
 
           !=== Convert Vienna to CT ===!
 
@@ -175,7 +175,7 @@
 
           !=== Stop Structure Specified ===!
 
-          READ(fasta,'(10000A1)')(fld(k),k=1,nn)
+          READ(fasta,'(30000A1)')(fld(k),k=1,nn)
 
           !=== Convert Vienna to BP ===!
 
@@ -214,6 +214,8 @@
           !=== STOCHASTIC SIMULATION ===!
 
           DO WHILE ( time < tmax )
+
+            WRITE(*,*)'TIME=',time
 
             CALL SSAREACTION (rna,iseed,time,tout)
 

@@ -51,7 +51,7 @@
         DOUBLE PRECISION, PARAMETER :: ratem = 5.0d0 !Helix Moprhing  (1/uS)!
         DOUBLE PRECISION, PARAMETER :: rated = 5.0d0 !Helix Diffusion (1/uS)!
 
-        INTEGER, PARAMETER :: mxnt = 10000
+        INTEGER, PARAMETER :: mxnt = 30000
 
         REAL, PARAMETER :: em  = 10.10e0
         REAL, PARAMETER :: eh  = -0.30e0
